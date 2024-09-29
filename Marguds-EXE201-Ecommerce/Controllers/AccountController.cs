@@ -363,6 +363,44 @@ namespace Marguds_EXE201_Ecommerce.Controllers
 
         }
 
+        [HttpPut("Update-Account-Status")]
+        public async Task<IActionResult> UpdateAccount(string userEmail, [FromBody] UpdateAccountStatusDto updateAccountStatusDto)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(userEmail);
+                if (user == null)
+                {
+                    return NotFound($"User with Email '{userEmail}' not found.");
+                }
+                var roles = await _userManager.GetRolesAsync(user);
+                if(roles.Contains("ADMIN"))
+                {
+                    return BadRequest("Admin cannot banned by him/herself");
+                }
+                user.Status = updateAccountStatusDto.Status;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (updateResult.Succeeded)
+                {
+                    
+                   
+                    return Ok(new UpdateAccountStatusResponse
+                    {
+                        Email = user.Email,
+                        Status = user.Status
+                    });
+                }
+                else
+                {
+                    return StatusCode(500, updateResult.Errors);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
        /* [Authorize(Roles = "Admin")]*/
         [HttpGet("Get-all-accounts")]
         public async Task<IActionResult> GetAllAccounts()
