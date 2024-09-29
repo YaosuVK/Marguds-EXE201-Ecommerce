@@ -1,12 +1,15 @@
 ﻿using BussinessObject.IdentityModel;
 using BussinessObject.Model;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Service.IService;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace Marguds_EXE201_Ecommerce.Controllers
 {
@@ -38,10 +41,15 @@ namespace Marguds_EXE201_Ecommerce.Controllers
 
             if (user == null) return Unauthorized("Invalid username!");
 
-            if(user.Status == false)
+            var userEmail = await GetUser(user.Email);
+            bool isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(userEmail);
+            if (!isEmailConfirmed) return BadRequest("You need to confirm email before login");
+
+            if (user.Status == false)
             {
                 return Unauthorized("Cannot login with this account anymore!");
             }
+
 
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -93,6 +101,9 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                     var token = await _tokenService.createToken(accountApp);
                     if (roleResult.Succeeded)
                     {
+                        var _user = await GetUser(registerDto.Email);
+                        var emailCode = await _userManager.GenerateEmailConfirmationTokenAsync(_user!);
+                        string sendEmail = SendEmail(_user!.Email!, emailCode);
                         var userRoles = await _userManager.GetRolesAsync(accountApp);
                         return Ok(
                             new NewUserDto
@@ -105,7 +116,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                                 Image = accountApp.Image,
                                 Roles = userRoles.ToList(),
                                 Token = token.AccessToken,
-                                RefreshToken = token.RefreshToken
+                                RefreshToken = token.RefreshToken                               
                             }
                         );
                     }
@@ -113,7 +124,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                     {
                         return StatusCode(500, roleResult.Errors);
                     }
-                    
+
                 }
                 else
                 {
@@ -125,6 +136,63 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                 return StatusCode(500, e);
             }
         }
+        private string SendEmail(string email, string emailCode)
+        {
+            StringBuilder emailMessage = new StringBuilder();
+            emailMessage.Append("<html>");
+            emailMessage.Append("<body>");
+            emailMessage.Append($"<p>Dear {email},</p>");
+            emailMessage.Append("<p>Thank you for your registering with us. To verifiy your email address, please use the following verification code: </p>");
+            emailMessage.Append($"<h2>Verification Code: {emailCode}</h2>");
+            emailMessage.Append("<p>Please enter this code on our website to complete your registration.</p>");
+            emailMessage.Append("<p>If you did not request this, please ignore this email</p>");
+            emailMessage.Append("<br>");
+            emailMessage.Append("<p>Best regards,</p>");
+            emailMessage.Append("<p><strong>Marguds-2nd_hand-Ecommerce</strong></o>");
+            emailMessage.Append("</body>");
+            emailMessage.Append("</html>");
+
+            string message = emailMessage.ToString();
+            var _email = new MimeMessage();
+            _email.To.Add(MailboxAddress.Parse(email));
+            _email.From.Add(MailboxAddress.Parse("khanhvmse171632@fpt.edu.vn"));
+            _email.Subject = "Email Confirmation";
+            _email.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message };
+
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            smtp.Authenticate("khanhvmse171632@fpt.edu.vn", "qkww weod sevi krjh"); //user email and password
+            smtp.Send(_email);
+            smtp.Disconnect(true);
+            return "Thank you for your registration, kindly check your email for confirmation code";
+
+        }
+
+        [HttpPost("confirmation/{email}/{code:int}")]
+        public async Task<IActionResult> Confirmation(string email, int code)
+        {
+            if (string.IsNullOrEmpty(email) || code <= 0)
+            {
+                return BadRequest("Invalid Code Provided");
+            }
+            var user = await GetUser(email);
+            if (user == null)
+            {
+                return BadRequest("Invalid Indentity Provided");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code.ToString());
+            if (!result.Succeeded)
+            {
+                return BadRequest("Invalid Code Provided");
+            }
+            else
+            {
+                return Ok("Email confirm successfully, you can proceed to login");
+            }
+        }
+
+        private async Task<Account> GetUser(string email)
+        => await _userManager.FindByEmailAsync(email);
 
         [HttpPost("resetToken")]
         public async Task<IActionResult> RenewToken(TokenModel model)

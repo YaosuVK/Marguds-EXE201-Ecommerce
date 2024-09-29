@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    [Migration("20240915053112_Initial")]
+    [Migration("20240929144958_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -626,25 +626,25 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c4fa03c7-a564-4df9-ad0e-096866242cf3",
+                            Id = "3e3cf1e1-5b9d-45b3-9470-5c89c73a9219",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0275ebd3-73b9-43a1-bffe-8bffdfad1374",
+                            Id = "0e345c3e-d5ec-4e26-a15f-7870fb2359e5",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "2d5aece9-a711-497f-b437-7a34c92b1f9c",
+                            Id = "76cf3bc8-8335-4f61-af66-589798791e34",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "7f1cd70d-ac3a-4b38-8f29-76591b0bcec0",
+                            Id = "cf0240b2-8c71-4d1d-a6eb-cb02380adde8",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });

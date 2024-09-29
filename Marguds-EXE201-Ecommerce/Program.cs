@@ -77,6 +77,7 @@ builder.Services.AddIdentity<Account, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 12;
+    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
 })
     .AddEntityFrameworkStores<MargudsContext>().AddDefaultTokenProviders();
 // warning: AccountApplication at here is a type of custom from IdentityUser;
