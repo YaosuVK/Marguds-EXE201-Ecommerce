@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    partial class MargudsContextModelSnapshot : ModelSnapshot
+    [Migration("20241006163254_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -604,13 +607,15 @@ namespace DataAccessLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubcriptionID"));
 
                     b.Property<string>("AccountID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PlanID")
-                        .HasColumnType("int");
+                    b.Property<string>("PlanID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
@@ -725,7 +730,7 @@ namespace DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VoucherDetailID")
+                    b.Property<int>("VoucherDetailID")
                         .HasColumnType("int");
 
                     b.Property<int>("VoucherTypes")
@@ -742,21 +747,22 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AccountID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("GiftID")
+                    b.Property<int>("GiftID")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("OrderID")
+                    b.Property<int>("OrderID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UsedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("VoucherID")
+                    b.Property<int>("VoucherID")
                         .HasColumnType("int");
 
                     b.HasKey("VoucherDetailID");
@@ -797,25 +803,25 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7556fd4f-744d-4e08-b07c-890205ffaf23",
+                            Id = "beb51427-1dbe-43d4-861b-cfce9e40010b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1fb2af06-0d65-4f75-b825-7b3a3a45a172",
+                            Id = "aa44a736-d730-4362-874b-3bd28769ba2a",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "c2f248b8-9637-4295-8f82-0fc463566634",
+                            Id = "f77d34fa-e8ba-4ea0-9434-d4e6a1291c23",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "d7920bc8-7a73-4a21-81f2-348284b1d368",
+                            Id = "3858ef2c-e14b-4d60-b7c0-54ede0b261ae",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -1125,11 +1131,15 @@ namespace DataAccessLayer.Migrations
                 {
                     b.HasOne("BussinessObject.Model.Account", "Account")
                         .WithMany("VoucherDetails")
-                        .HasForeignKey("AccountID");
+                        .HasForeignKey("AccountID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BussinessObject.Model.Gift", "Gift")
                         .WithMany("VoucherDetails")
-                        .HasForeignKey("GiftID");
+                        .HasForeignKey("GiftID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BussinessObject.Model.Voucher", "Voucher")
                         .WithOne("VoucherDetail")

@@ -25,6 +25,9 @@ namespace BussinessObject.Model
 
         //public ICollection<CartItem> CartItems { get; set; }
 
+        public int? SubcriptionID { get; set; }
+        public Subscription Subscription { get; set; } 
+
 
         public ICollection<Report> Reports { get; set; }
 
@@ -33,5 +36,7 @@ namespace BussinessObject.Model
 
 
         public ICollection<Review> Reviews { get; set; }
+
+        public ICollection<VoucherDetail> VoucherDetails { get; set; }
     }
 }

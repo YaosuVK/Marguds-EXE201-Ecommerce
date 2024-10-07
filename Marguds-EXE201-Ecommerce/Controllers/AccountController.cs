@@ -381,9 +381,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                 user.Status = updateAccountStatusDto.Status;
                 var updateResult = await _userManager.UpdateAsync(user);
                 if (updateResult.Succeeded)
-                {
-                    
-                   
+                { 
                     return Ok(new UpdateAccountStatusResponse
                     {
                         Email = user.Email,

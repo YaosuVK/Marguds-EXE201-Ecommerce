@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    [Migration("20240929144958_Initial")]
-    partial class Initial
+    [Migration("20241007131439_Initial2")]
+    partial class Initial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("SubcriptionID")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -107,6 +110,10 @@ namespace DataAccessLayer.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SubcriptionID")
+                        .IsUnique()
+                        .HasFilter("[SubcriptionID] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -173,6 +180,33 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.Gift", b =>
+                {
+                    b.Property<int>("GiftID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GiftID"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GiftName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InventoryQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("GiftID");
+
+                    b.ToTable("Gifts");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.ImageProduct", b =>
                 {
                     b.Property<int>("ImageProductsID")
@@ -198,10 +232,7 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BussinessObject.Model.Order", b =>
                 {
                     b.Property<int>("OrderID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
 
                     b.Property<string>("AccountID")
                         .IsRequired()
@@ -224,6 +255,9 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<double>("Total")
                         .HasColumnType("float");
+
+                    b.Property<int>("VoucherDetailID")
+                        .HasColumnType("int");
 
                     b.Property<string>("transactionID")
                         .HasColumnType("nvarchar(450)");
@@ -537,6 +571,66 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("ShippingInfo");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.SubcriptionPlan", b =>
+                {
+                    b.Property<int>("PlanID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlanID"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PlanName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.HasKey("PlanID");
+
+                    b.ToTable("SubcriptionPlans");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.Subscription", b =>
+                {
+                    b.Property<int>("SubcriptionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubcriptionID"));
+
+                    b.Property<string>("AccountID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PlanID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubscriptionPlansPlanID")
+                        .HasColumnType("int");
+
+                    b.HasKey("SubcriptionID");
+
+                    b.HasIndex("SubscriptionPlansPlanID");
+
+                    b.ToTable("Subscriptions");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.Transaction", b =>
                 {
                     b.Property<string>("ResponseId")
@@ -597,6 +691,86 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Transaction");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.Voucher", b =>
+                {
+                    b.Property<int>("VoucherID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DiscountPercentage")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsMembership")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("VoucherCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VoucherDetailID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoucherTypes")
+                        .HasColumnType("int");
+
+                    b.HasKey("VoucherID");
+
+                    b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
+                {
+                    b.Property<int>("VoucherDetailID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccountID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("GiftID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UsedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VoucherID")
+                        .HasColumnType("int");
+
+                    b.HasKey("VoucherDetailID");
+
+                    b.HasIndex("AccountID");
+
+                    b.HasIndex("GiftID");
+
+                    b.ToTable("VoucherDetails");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -626,25 +800,25 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3e3cf1e1-5b9d-45b3-9470-5c89c73a9219",
+                            Id = "7556fd4f-744d-4e08-b07c-890205ffaf23",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0e345c3e-d5ec-4e26-a15f-7870fb2359e5",
+                            Id = "1fb2af06-0d65-4f75-b825-7b3a3a45a172",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "76cf3bc8-8335-4f61-af66-589798791e34",
+                            Id = "c2f248b8-9637-4295-8f82-0fc463566634",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "cf0240b2-8c71-4d1d-a6eb-cb02380adde8",
+                            Id = "d7920bc8-7a73-4a21-81f2-348284b1d368",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -756,6 +930,15 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.Account", b =>
+                {
+                    b.HasOne("BussinessObject.Model.Subscription", "Subscription")
+                        .WithOne("Account")
+                        .HasForeignKey("BussinessObject.Model.Account", "SubcriptionID");
+
+                    b.Navigation("Subscription");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.Cart", b =>
                 {
                     b.HasOne("BussinessObject.Model.Account", "Accounts")
@@ -805,6 +988,12 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BussinessObject.Model.VoucherDetail", "VoucherDetail")
+                        .WithOne("Order")
+                        .HasForeignKey("BussinessObject.Model.Order", "OrderID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("BussinessObject.Model.Report", "Report")
                         .WithOne("Order")
                         .HasForeignKey("BussinessObject.Model.Order", "ReportID");
@@ -824,6 +1013,8 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("ShippingInfo");
 
                     b.Navigation("Transaction");
+
+                    b.Navigation("VoucherDetail");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.OrderDetail", b =>
@@ -922,6 +1113,40 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.Subscription", b =>
+                {
+                    b.HasOne("BussinessObject.Model.SubcriptionPlan", "SubscriptionPlans")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("SubscriptionPlansPlanID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubscriptionPlans");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
+                {
+                    b.HasOne("BussinessObject.Model.Account", "Account")
+                        .WithMany("VoucherDetails")
+                        .HasForeignKey("AccountID");
+
+                    b.HasOne("BussinessObject.Model.Gift", "Gift")
+                        .WithMany("VoucherDetails")
+                        .HasForeignKey("GiftID");
+
+                    b.HasOne("BussinessObject.Model.Voucher", "Voucher")
+                        .WithOne("VoucherDetail")
+                        .HasForeignKey("BussinessObject.Model.VoucherDetail", "VoucherDetailID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Gift");
+
+                    b.Navigation("Voucher");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -980,6 +1205,8 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Reports");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("VoucherDetails");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Cart", b =>
@@ -990,6 +1217,11 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BussinessObject.Model.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.Gift", b =>
+                {
+                    b.Navigation("VoucherDetails");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Order", b =>
@@ -1022,7 +1254,29 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.SubcriptionPlan", b =>
+                {
+                    b.Navigation("Subscriptions");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.Subscription", b =>
+                {
+                    b.Navigation("Account")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BussinessObject.Model.Transaction", b =>
+                {
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.Voucher", b =>
+                {
+                    b.Navigation("VoucherDetail")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
                 {
                     b.Navigation("Order");
                 });
