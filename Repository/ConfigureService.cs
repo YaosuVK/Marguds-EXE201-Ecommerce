@@ -30,8 +30,8 @@ namespace Repository
             services.AddTransient<IReportRepository, ReportRepository>();
             services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ITokenRepository, TokenRepository>();
+            services.AddScoped<IGiftRepository, GiftRepository>();
 
-            
 
             //
             services.AddScoped<AccountDAO>();
@@ -42,6 +42,7 @@ namespace Repository
             services.AddScoped<RatingDAO>();
             services.AddScoped<CategoryDAO>();
             services.AddScoped<ReportDAO>();
+            services.AddScoped<GiftDAO>();
             //
 
             return services;

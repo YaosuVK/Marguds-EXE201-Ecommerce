@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BussinessObject.Model;
 using Service.RequestAndResponse.Request.Category;
+using Service.RequestAndResponse.Request.Gift;
 using Service.RequestAndResponse.Request.ImageProduct;
 using Service.RequestAndResponse.Request.Order;
 using Service.RequestAndResponse.Request.Product;
@@ -10,6 +11,7 @@ using Service.RequestAndResponse.Response.Account;
 using Service.RequestAndResponse.Response.Cart;
 using Service.RequestAndResponse.Response.Category;
 using Service.RequestAndResponse.Response.Checkout;
+using Service.RequestAndResponse.Response.Gift;
 using Service.RequestAndResponse.Response.ImageProduct;
 using Service.RequestAndResponse.Response.Order;
 using Service.RequestAndResponse.Response.Product;
@@ -80,6 +82,10 @@ namespace Service.Mapping
             CreateMap<ShippingInfo, ShippingInfoResponse>();
             CreateMap<Transaction, TransactionResponse>();
 
+            CreateMap<Gift, GetAllGiftResponse>();
+            CreateMap<Gift, GetGiftResponse>();
+            CreateMap<CreateGiftRequest, Gift>().ReverseMap();
+            CreateMap<UpdateGiftRequest, Gift>().ReverseMap();
 
             /*CreateMap<CreateNewUserRequest, AccountApplication>().ReverseMap();
             CreateMap<AccountApplication, CreateNewUserResponse>().ReverseMap();

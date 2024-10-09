@@ -36,6 +36,7 @@ namespace Service
             services.AddTransient<IFileService, FileService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IGiftService, GiftService>();
 
             return services;
         }
