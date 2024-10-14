@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,11 +112,26 @@ namespace DataAccessLayer
         public DbSet<VoucherDetail> VoucherDetails { set; get; }
         public DbSet<Gift> Gifts { set; get; }
 
-        private const string ConnectString = "server=DESKTOP-88329MO\\KHANHVU21;database=MargudsStore_Db5;uid=sa;pwd=12345;Integrated Security=true;Trusted_Connection=false;TrustServerCertificate=True";
+        private const string ConnectString = "server=localhost;database=MargudsStore_Db;Integrated Security=true;Trusted_connection=true;TrustServerCertificate=true;";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConnectString);
+            if (!optionsBuilder.IsConfigured)
+            {
+                if (!optionsBuilder.IsConfigured)
+                {
+                    optionsBuilder.UseSqlServer(GetConnectionString());
+                }
+            }
+        }
+        private string GetConnectionString()
+        {
+            IConfiguration config = new ConfigurationBuilder()
+                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "Marguds-EXE201-Ecommerce"))
+                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                 .Build();
+            var strConn = config["ConnectionStrings:DbConnection"];
 
+            return strConn;
         }
     }
 }
