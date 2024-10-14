@@ -112,19 +112,27 @@ builder.Services.AddAuthentication(options =>
     };
 });
 //
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder => builder
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
-app.UseCors(builder => builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+    app.UseSwaggerUI(c=>
+    {
+        c.SwaggerEndpoint("swagger/v1/swagger.json", "Marguds API V1");
+        c.RoutePrefix = string.Empty;
+    });
+//}
+app.UseCors();
 
 app.UseHttpsRedirection();
 
