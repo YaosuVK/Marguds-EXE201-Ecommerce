@@ -26,6 +26,11 @@ namespace DataAccessLayer
             .WithOne(e => e.Transaction)
                 .HasForeignKey<Order>(e => e.transactionID);
 
+            modelBuilder.Entity<Transaction>()
+                .HasOne(e => e.Subscription)
+            .WithOne(e => e.Transaction)
+                .HasForeignKey<Subscription>(e => e.transactionID);
+
             modelBuilder.Entity<ShippingInfo>()
                 .HasOne(e => e.Order)
                 .WithOne(e => e.ShippingInfo)
@@ -76,14 +81,20 @@ namespace DataAccessLayer
                   {
                       Name = "Manager",
                       NormalizedName = "MANAGER"
-                  }
+                  },
+                  new IdentityRole
+                  {
+                      Name = "Shipper",
+                      NormalizedName = "SHIPPER"
+                  } 
              };
             modelBuilder.Entity<IdentityRole>().HasData(roles);
         }
-
+        public DbSet<Blog> Blogs { set; get; }
         public DbSet<Cart> Carts { set; get; }
         public DbSet<CartItem> CartItems { set; get; }
         public DbSet<Category> Categories { set; get; }
+        public DbSet<ImageBlog> ImageBlogs { set; get; }
         public DbSet<ImageProduct> ImageProducts { set; get; }
         public DbSet<Order> Orders { set; get; }
         public DbSet<OrderDetail> OrderDetails { set; get; }
@@ -100,7 +111,7 @@ namespace DataAccessLayer
         public DbSet<VoucherDetail> VoucherDetails { set; get; }
         public DbSet<Gift> Gifts { set; get; }
 
-        private const string ConnectString = "server=DESKTOP-88329MO\\KHANHVU21;database=MargudsStore_Db1;uid=sa;pwd=12345;Integrated Security=true;Trusted_Connection=false;TrustServerCertificate=True";
+        private const string ConnectString = "server=DESKTOP-88329MO\\KHANHVU21;database=MargudsStore_Db4;uid=sa;pwd=12345;Integrated Security=true;Trusted_Connection=false;TrustServerCertificate=True";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(ConnectString);

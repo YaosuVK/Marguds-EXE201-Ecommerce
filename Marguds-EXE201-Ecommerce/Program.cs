@@ -30,7 +30,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 // Connect Database
 builder.Services.AddDbContext<MargudsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"),
-        sqlOptions => sqlOptions.MigrationsAssembly("Marguds-EXE201-Ecommerce")));
+        sqlOptions => sqlOptions.MigrationsAssembly("DataAccessLayer")));
 
 // Configure Services
 builder.Services.ConfigureRepositoryService(builder.Configuration);

@@ -21,6 +21,10 @@ namespace BussinessObject.Model
         public int? PlanID { get; set; }
         public SubcriptionPlan SubscriptionPlans { get; set; }
 
+        public string? transactionID { get; set; }
+        public Transaction? Transaction { get; set; }
+
+
         public DateTime StartedAt { get; set; }
         public DateTime EndedAt { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BussinessObject.Model;
+using Service.RequestAndResponse.Request.Blog;
 using Service.RequestAndResponse.Request.Category;
 using Service.RequestAndResponse.Request.Gift;
 using Service.RequestAndResponse.Request.ImageProduct;
@@ -7,17 +8,21 @@ using Service.RequestAndResponse.Request.Order;
 using Service.RequestAndResponse.Request.Product;
 using Service.RequestAndResponse.Request.Rating;
 using Service.RequestAndResponse.Request.Report;
+using Service.RequestAndResponse.Request.SubcriptionPlan;
 using Service.RequestAndResponse.Response.Account;
+using Service.RequestAndResponse.Response.Blog;
 using Service.RequestAndResponse.Response.Cart;
 using Service.RequestAndResponse.Response.Category;
 using Service.RequestAndResponse.Response.Checkout;
 using Service.RequestAndResponse.Response.Gift;
+using Service.RequestAndResponse.Response.ImageBlog;
 using Service.RequestAndResponse.Response.ImageProduct;
 using Service.RequestAndResponse.Response.Order;
 using Service.RequestAndResponse.Response.Product;
 using Service.RequestAndResponse.Response.Rating;
 using Service.RequestAndResponse.Response.Report;
 using Service.RequestAndResponse.Response.Shipping;
+using Service.RequestAndResponse.Response.SubcriptionPlan;
 using Service.RequestAndResponse.Response.Transaction;
 using System;
 using System.Collections.Generic;
@@ -35,9 +40,14 @@ namespace Service.Mapping
             CreateMap<Account, GetAllUserResponse>();
             CreateMap<Account, UpdateUserResponseByString>();
             CreateMap<Account, GetUserByStringIdResponse>();
-            
-            //
 
+            //
+            CreateMap<ImageBlog, GetAllImageBlogResponse>();
+            CreateMap<Blog, BlogResponse>();
+            CreateMap<BlogRequest, Blog>().ReverseMap();
+            CreateMap<UpdateBlogRequest, Blog>().ReverseMap();
+
+            //
             CreateMap<Product, GetAllProductsResponse>();
             CreateMap<Product, GetProductByIdResponse>();
             CreateMap<Product, GetAllProductsForManagerResponse>();
@@ -87,6 +97,10 @@ namespace Service.Mapping
             CreateMap<CreateGiftRequest, Gift>().ReverseMap();
             CreateMap<UpdateGiftRequest, Gift>().ReverseMap();
 
+            CreateMap<SubcriptionPlan, GetAllSubcriptionPlanResponse>();
+            CreateMap<CreateSubcriptionPlanRequest, SubcriptionPlan>().ReverseMap();
+            CreateMap<UpdateSubcriptionPlanRequest, SubcriptionPlan>().ReverseMap();
+
             /*CreateMap<CreateNewUserRequest, AccountApplication>().ReverseMap();
             CreateMap<AccountApplication, CreateNewUserResponse>().ReverseMap();
             CreateMap<AccountApplication, GetUserByIdResponse>();
@@ -96,10 +110,7 @@ namespace Service.Mapping
             CreateMap<UpdateUserRequestByString, AccountApplication>().ReverseMap();
             //
             CreateMap<Product, ViewProductHomePageResponse>();
-            CreateMap<ImageBlog, GetAllImageBlogResponse>();
-            CreateMap<Blog, BlogResponse>();
-            CreateMap<BlogRequest, Blog>().ReverseMap();
-            CreateMap<UpdateBlogRequest, Blog>().ReverseMap();
+            
             //
             //
             //for admin dashboard

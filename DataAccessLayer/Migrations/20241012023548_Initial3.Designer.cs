@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    partial class MargudsContextModelSnapshot : ModelSnapshot
+    [Migration("20241012023548_Initial3")]
+    partial class Initial3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -683,16 +686,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("SubscriptionPlansPlanID")
                         .HasColumnType("int");
 
-                    b.Property<string>("transactionID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("SubcriptionID");
 
                     b.HasIndex("SubscriptionPlansPlanID");
-
-                    b.HasIndex("transactionID")
-                        .IsUnique()
-                        .HasFilter("[transactionID] IS NOT NULL");
 
                     b.ToTable("Subscriptions");
                 });
@@ -765,9 +761,6 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherID"));
 
-                    b.Property<string>("AccountID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -804,8 +797,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("VoucherID");
-
-                    b.HasIndex("AccountID");
 
                     b.ToTable("Vouchers");
                 });
@@ -871,33 +862,27 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a62a4b7c-c2bd-4742-90ef-eab04166455a",
+                            Id = "9866ff13-5f1e-4bd8-af80-6ee96c8961dc",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0fd290ea-4902-40b9-b0f7-64264971c60f",
+                            Id = "467c24eb-04cb-4603-99c2-187a4dcd625d",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "a1fe4b7f-2dc9-446c-a397-5435fde8f807",
+                            Id = "fc7c17a6-3e4d-4333-be1f-f3eef072cfcf",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "0de382ec-892b-4248-a822-5be048e3aa58",
+                            Id = "d3edd655-9ef0-4c1c-b61a-9ad39eae2d93",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = "6179602b-e1ee-4863-846e-a4dd511f6a79",
-                            Name = "Shipper",
-                            NormalizedName = "SHIPPER"
                         });
                 });
 
@@ -1220,22 +1205,7 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BussinessObject.Model.Transaction", "Transaction")
-                        .WithOne("Subscription")
-                        .HasForeignKey("BussinessObject.Model.Subscription", "transactionID");
-
                     b.Navigation("SubscriptionPlans");
-
-                    b.Navigation("Transaction");
-                });
-
-            modelBuilder.Entity("BussinessObject.Model.Voucher", b =>
-                {
-                    b.HasOne("BussinessObject.Model.Account", "Account")
-                        .WithMany("Vouchers")
-                        .HasForeignKey("AccountID");
-
-                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
@@ -1323,8 +1293,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("VoucherDetails");
-
-                    b.Navigation("Vouchers");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Blog", b =>
@@ -1391,9 +1359,6 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BussinessObject.Model.Transaction", b =>
                 {
                     b.Navigation("Order");
-
-                    b.Navigation("Subscription")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Voucher", b =>

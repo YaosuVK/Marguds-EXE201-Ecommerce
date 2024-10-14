@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    partial class MargudsContextModelSnapshot : ModelSnapshot
+    [Migration("20241013133512_Db_Init")]
+    partial class Db_Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -765,9 +768,6 @@ namespace DataAccessLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherID"));
 
-                    b.Property<string>("AccountID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -804,8 +804,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("VoucherID");
-
-                    b.HasIndex("AccountID");
 
                     b.ToTable("Vouchers");
                 });
@@ -871,31 +869,31 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a62a4b7c-c2bd-4742-90ef-eab04166455a",
+                            Id = "fe786a6b-faf7-4916-875d-bc2b85426967",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0fd290ea-4902-40b9-b0f7-64264971c60f",
+                            Id = "163a832b-bae8-4ea9-ae3f-056c024fb562",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "a1fe4b7f-2dc9-446c-a397-5435fde8f807",
+                            Id = "fa5831f6-8a18-4c29-b8c4-da5624d1979c",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "0de382ec-892b-4248-a822-5be048e3aa58",
+                            Id = "d87543ad-9c68-4f46-84d4-f4771a52001a",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "6179602b-e1ee-4863-846e-a4dd511f6a79",
+                            Id = "2cbc2940-d099-47d4-b733-4087ab3a3540",
                             Name = "Shipper",
                             NormalizedName = "SHIPPER"
                         });
@@ -1229,15 +1227,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Transaction");
                 });
 
-            modelBuilder.Entity("BussinessObject.Model.Voucher", b =>
-                {
-                    b.HasOne("BussinessObject.Model.Account", "Account")
-                        .WithMany("Vouchers")
-                        .HasForeignKey("AccountID");
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
                 {
                     b.HasOne("BussinessObject.Model.Account", "Account")
@@ -1323,8 +1312,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("VoucherDetails");
-
-                    b.Navigation("Vouchers");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Blog", b =>

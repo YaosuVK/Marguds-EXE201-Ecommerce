@@ -16,6 +16,8 @@ namespace BussinessObject.Model
         //[ForeignKey("OrderID")]
         public Order? Order { get; set; } = null!;
 
+        public Subscription Subscription { get; set; } = null!;
+
         public string TmnCode { get; set; }
 
         public string TxnRef { get; set; }

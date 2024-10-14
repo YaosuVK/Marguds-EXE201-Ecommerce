@@ -21,8 +21,10 @@ namespace Service
            
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IBlogService, BlogService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IImageProductService, ImageProductService>();
+            services.AddScoped<IImageBlogService, ImageBlogService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICheckoutService, CheckoutService>();
             services.AddScoped<IVnPayService, VnPayService>();
@@ -33,10 +35,11 @@ namespace Service
             
             services.AddScoped<IFileService, FileService>();
             services.AddTransient<IReportService, ReportService>();
-            services.AddTransient<IFileService, FileService>();
+            /*services.AddTransient<IFileService, FileService>();*/
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGiftService, GiftService>();
+            services.AddScoped<ISubcriptionPlanService, SubcriptionPlanService>();
 
             return services;
         }

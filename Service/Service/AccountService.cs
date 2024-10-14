@@ -34,7 +34,7 @@ namespace Service.Service
             }
             else
             {
-                return new BaseResponse<IEnumerable<GetAllUserResponse>>("Get all user as base success",
+                return new BaseResponse<IEnumerable<GetAllUserResponse>>("Get all user as base fail",
                 StatusCodeEnum.BadGateway_502, user);
             }
         }

@@ -36,7 +36,12 @@ namespace BussinessObject.Model
         public int? VoucherDetailID { get; set; }
         public VoucherDetail VoucherDetail { get; set; } = null!;
 
-       /* public ICollection<Gift> Gifts { get; set; }*/
+
+        [ForeignKey("AccountID")]
+        public string? AccountID { get; set; }
+        public Account Account { get; set; }
+
+        /* public ICollection<Gift> Gifts { get; set; }*/
 
 
 
