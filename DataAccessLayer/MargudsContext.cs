@@ -111,7 +111,7 @@ namespace DataAccessLayer
         public DbSet<VoucherDetail> VoucherDetails { set; get; }
         public DbSet<Gift> Gifts { set; get; }
 
-        private const string ConnectString = "server=DESKTOP-88329MO\\KHANHVU21;database=MargudsStore_Db4;uid=sa;pwd=12345;Integrated Security=true;Trusted_Connection=false;TrustServerCertificate=True";
+        private const string ConnectString = "server=DESKTOP-88329MO\\KHANHVU21;database=MargudsStore_Db5;uid=sa;pwd=12345;Integrated Security=true;Trusted_Connection=false;TrustServerCertificate=True";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(ConnectString);
