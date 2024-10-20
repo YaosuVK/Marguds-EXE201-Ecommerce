@@ -52,5 +52,20 @@ namespace DataAccessLayer
             var result = PaginatedList<Category>.Create(searchCategories, pageIndex, pageSize).ToList();
             return result;
         }
+
+        public async Task<Category> DeleteCategory(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
+            {
+                var hasProduct = await _context.Products.AnyAsync( c => c.CategoryID == id);
+                if (!hasProduct) 
+                {
+                    _context.Categories.Remove(category);
+                }
+            }
+            await _context.SaveChangesAsync();
+            return category;
+        }
     }
 }

@@ -28,6 +28,12 @@ namespace Repository.Repository
             return _categoryDAO.DeleteAsync(entity);
         }
 
+        public Task<Category> DeleteCategory(int id)
+        {
+            return _categoryDAO.DeleteCategory(id);
+            
+        }
+
         public Task<IEnumerable<Category>> GetAllAsync()
         {
             return _categoryDAO.GetAllAsync();
