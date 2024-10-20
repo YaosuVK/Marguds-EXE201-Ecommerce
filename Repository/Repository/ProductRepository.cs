@@ -23,8 +23,8 @@ namespace Repository.Repository
             return await _productDao.GetAllOrdersAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string sortBy, int pageIndex,
-            int pageSize)
+        public async Task<IEnumerable<Product>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string? sortBy, int? pageIndex,
+            int? pageSize)
         {
             return await _productDao.GetProductsAsync(search, lowPrice, highPrice, category, sortBy, pageIndex, pageSize);
         }

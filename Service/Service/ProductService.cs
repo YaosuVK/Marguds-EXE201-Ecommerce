@@ -71,8 +71,8 @@ namespace Service.Service
             return new BaseResponse<UpdateProductRequest>("Update Product as base success", StatusCodeEnum.OK_200, result);
         }
 
-        public async Task<BaseResponse<IEnumerable<GetFilterProductResponse>>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string sortBy, int pageIndex,
-            int pageSize)
+        public async Task<BaseResponse<IEnumerable<GetFilterProductResponse>>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string? sortBy, int? pageIndex,
+            int? pageSize)
         {
             var products = await _productRepository.GetProductsAsync(search, lowPrice, highPrice, category, sortBy, pageIndex, pageSize);
             var product = _mapper.Map<IEnumerable<GetFilterProductResponse>>(products);

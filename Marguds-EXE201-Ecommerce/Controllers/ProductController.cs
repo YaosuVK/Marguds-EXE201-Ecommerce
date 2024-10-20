@@ -76,8 +76,8 @@ public class ProductController : ControllerBase
 
     [HttpGet]
     [Route("base/getProducts")]
-    public async Task<ActionResult<BaseResponse<IEnumerable<GetFilterProductResponse>>>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string sortBy, int pageIndex,
-        int pageSize)
+    public async Task<ActionResult<BaseResponse<IEnumerable<GetFilterProductResponse>>>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string? sortBy, int? pageIndex,
+        int? pageSize)
     {
         return await _productService.GetProductsAsync(search, lowPrice, highPrice, category, sortBy, pageIndex, pageSize);
     }

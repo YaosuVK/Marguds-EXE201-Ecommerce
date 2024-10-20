@@ -68,7 +68,7 @@ namespace DataAccessLayer
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync(string search = null, double? lowPrice = null, double? highPrice = null, int? category = null, string sortBy = null, int pageIndex = 1, int pageSize = 10)
+        public async Task<IEnumerable<Product>> GetProductsAsync(string? search = null, double? lowPrice = null, double? highPrice = null, int? category = null, string? sortBy = null, int? pageIndex = 1, int? pageSize = 10)
         {
             IQueryable<Product> products = _context.Products
                 .Include(p => p.ImageProducts)
@@ -113,9 +113,12 @@ namespace DataAccessLayer
                         break;
                 }
             }
+            // Ensure pageIndex and pageSize are not null
+            int actualPageIndex = pageIndex ?? 1;
+            int actualPageSize = pageSize ?? 10;
 
             // Apply pagination
-            var paginatedProducts = PaginatedList<Product>.Create(products, pageIndex, pageSize);
+            var paginatedProducts = PaginatedList<Product>.Create(products, actualPageIndex, actualPageSize);
 
             // Execute the query and return the results as a list
             return paginatedProducts;
