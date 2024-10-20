@@ -39,8 +39,8 @@ namespace BussinessObject.Model
 
         public ICollection<Review> Reviews { get; set; }
 
-        public ICollection<VoucherDetail> VoucherDetails { get; set; }
+        public ICollection<VoucherUsage> VoucherUsages { get; set; }
 
-        public ICollection<Voucher> Vouchers { get; set; }
+        public ICollection<UserVoucher> UserVouchers { get; set; }
     }
 }

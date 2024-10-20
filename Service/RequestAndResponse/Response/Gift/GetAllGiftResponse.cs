@@ -19,6 +19,6 @@ namespace Service.RequestAndResponse.Response.Gift
 
         public bool Status { get; set; }
 
-        public ICollection<VoucherDetail> VoucherDetails { get; set; }
+        public ICollection<VoucherUsage> VoucherUsages { get; set; }
     }
 }

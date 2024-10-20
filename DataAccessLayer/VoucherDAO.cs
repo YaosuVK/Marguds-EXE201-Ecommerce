@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer;
 
-public class VoucherDAO : BaseDAO<Voucher>
+public class VoucherDAO : BaseDAO<UserVoucher>
 {
     private readonly MargudsContext _context;
     public VoucherDAO(MargudsContext context) : base(context)
@@ -17,21 +17,21 @@ public class VoucherDAO : BaseDAO<Voucher>
       _context = context;
     }
 
-    public async Task<IEnumerable<Voucher>> GetAllVouchersAsync()
+    public async Task<IEnumerable<UserVoucher>> GetAllVouchersAsync()
     {
-        return await _context.Vouchers
-       .Include(v => v.VoucherDetail)
+        return await _context.UserVouchers
+       .Include(v => v.VoucherUsage)
        .ToListAsync();
 
     }
-    public async Task<Voucher> GetByIdAsync(int id)
+    public async Task<UserVoucher> GetByIdAsync(int id)
     {
         if (id <= 0)
         {
             throw new ArgumentNullException($"id {id} not found");
         }
-        var entity = await _context.Set<Voucher>()
-           .SingleOrDefaultAsync(v => v.VoucherID == id);
+        var entity = await _context.Set<UserVoucher>()
+           .SingleOrDefaultAsync(v => v.UserVoucherID == id);
         if (entity == null)
         {
             throw new ArgumentNullException($"Entity with id {id} not found");
@@ -39,14 +39,14 @@ public class VoucherDAO : BaseDAO<Voucher>
         return entity;
     }
 
-    public async Task<Voucher> GetVoucherByCode(string voucherCode)
+    public async Task<UserVoucher> GetVoucherByCode(string voucherCode)
     {
         if (string.IsNullOrEmpty(voucherCode))
         {
             throw new ArgumentException("Voucher Code is required.", nameof(voucherCode));
         }
-        var voucher = await _context.Vouchers
-        .Include(v => v.VoucherDetail)
+        var voucher = await _context.UserVouchers
+        .Include(v => v.VoucherUsage)
         .FirstOrDefaultAsync(v => v.VoucherCode == voucherCode);
        
 
@@ -58,14 +58,14 @@ public class VoucherDAO : BaseDAO<Voucher>
         return voucher;
     }
 
-    public async Task<Voucher> GetVoucherByAccountID(string accountID)
+    public async Task<UserVoucher> GetVoucherByAccountID(string accountID)
     {
         if (string.IsNullOrEmpty(accountID))
         {
             throw new ArgumentException("Account ID is required.", nameof(accountID));
         }
-        var voucher = await _context.Vouchers
-        .Include(v => v.VoucherDetail)
+        var voucher = await _context.UserVouchers
+        .Include(v => v.VoucherUsage)
         .FirstOrDefaultAsync(v => v.AccountID == accountID);
 
 

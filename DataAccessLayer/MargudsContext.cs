@@ -47,16 +47,16 @@ namespace DataAccessLayer
                 .WithOne(e => e.Subscription)
                 .HasForeignKey<Account>(e => e.SubcriptionID);
 
-            modelBuilder.Entity<Voucher>()
-                .HasOne(e => e.VoucherDetail)
-                .WithOne(e => e.Voucher)
-                .HasForeignKey<VoucherDetail>(e => e.VoucherDetailID)
+            modelBuilder.Entity<VoucherUsage>()
+                .HasOne(e => e.UserVoucher)
+                .WithOne(e => e.VoucherUsage)
+                .HasForeignKey<VoucherUsage>(e => e.UserVoucherID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<VoucherDetail>()
+            modelBuilder.Entity<VoucherUsage>()
                 .HasOne(e => e.Order)
-                .WithOne(e => e.VoucherDetail)
-                .HasForeignKey<Order>(e => e.OrderID)
+                .WithOne(e => e.VoucherUsage)
+                .HasForeignKey<VoucherUsage>(e => e.OrderID)
                 .OnDelete(DeleteBehavior.NoAction);
                 
 
@@ -108,11 +108,11 @@ namespace DataAccessLayer
         public DbSet<Transaction> Transaction { set; get; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<SubcriptionPlan> SubcriptionPlans { set; get; }
-        public DbSet<Voucher> Vouchers { set; get; }
-        public DbSet<VoucherDetail> VoucherDetails { set; get; }
+        public DbSet<VoucherTemplate> VoucherTemplates { set; get; }
+        public DbSet<UserVoucher> UserVouchers { set; get; }
+        public DbSet<VoucherUsage> VoucherUsages { set; get; }
         public DbSet<Gift> Gifts { set; get; }
 
-        private const string ConnectString = "server=localhost;database=MargudsStore_Db;Integrated Security=true;Trusted_connection=true;TrustServerCertificate=true;";
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

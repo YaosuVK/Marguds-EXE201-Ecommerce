@@ -25,6 +25,6 @@ namespace BussinessObject.Model
         public int VoucherID { get; set; }
         public Voucher Voucher { get; set; }*/
 
-        public ICollection<VoucherDetail> VoucherDetails { get; set; }
+        public ICollection<VoucherUsage> VoucherUsages { get; set; }
     }
 }

@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    [Migration("20241007131439_Initial2")]
-    partial class Initial2
+    [Migration("20241020165453_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -118,6 +118,46 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.Blog", b =>
+                {
+                    b.Property<int>("BlogID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogID"));
+
+                    b.Property<string>("AccountID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BlogID");
+
+                    b.HasIndex("AccountID");
+
+                    b.ToTable("Blogs");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.Cart", b =>
                 {
                     b.Property<int>("CartID")
@@ -207,6 +247,28 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Gifts");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.ImageBlog", b =>
+                {
+                    b.Property<int>("ImageBlogsID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageBlogsID"));
+
+                    b.Property<int>("BlogID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageBlogsID");
+
+                    b.HasIndex("BlogID");
+
+                    b.ToTable("ImageBlog");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.ImageProduct", b =>
                 {
                     b.Property<int>("ImageProductsID")
@@ -232,7 +294,10 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BussinessObject.Model.Order", b =>
                 {
                     b.Property<int>("OrderID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
 
                     b.Property<string>("AccountID")
                         .IsRequired()
@@ -255,9 +320,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<double>("Total")
                         .HasColumnType("float");
-
-                    b.Property<int>("VoucherDetailID")
-                        .HasColumnType("int");
 
                     b.Property<string>("transactionID")
                         .HasColumnType("nvarchar(450)");
@@ -624,9 +686,16 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("SubscriptionPlansPlanID")
                         .HasColumnType("int");
 
+                    b.Property<string>("transactionID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("SubcriptionID");
 
                     b.HasIndex("SubscriptionPlansPlanID");
+
+                    b.HasIndex("transactionID")
+                        .IsUnique()
+                        .HasFilter("[transactionID] IS NOT NULL");
 
                     b.ToTable("Subscriptions");
                 });
@@ -691,13 +760,49 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Transaction");
                 });
 
-            modelBuilder.Entity("BussinessObject.Model.Voucher", b =>
+            modelBuilder.Entity("BussinessObject.Model.UserVoucher", b =>
                 {
-                    b.Property<int>("VoucherID")
+                    b.Property<int>("UserVoucherID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserVoucherID"));
+
+                    b.Property<string>("AccountID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("VoucherCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("VoucherTemplateID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserVoucherID");
+
+                    b.HasIndex("AccountID");
+
+                    b.HasIndex("VoucherTemplateID");
+
+                    b.ToTable("UserVouchers");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.VoucherTemplate", b =>
+                {
+                    b.Property<int>("VoucherTemplateID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherTemplateID"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -715,6 +820,13 @@ namespace DataAccessLayer.Migrations
                     b.Property<bool>("IsMembership")
                         .HasColumnType("bit");
 
+                    b.Property<double>("MilestoneAmount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
 
@@ -724,25 +836,21 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("VoucherCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("VoucherDetailID")
-                        .HasColumnType("int");
-
                     b.Property<int>("VoucherTypes")
                         .HasColumnType("int");
 
-                    b.HasKey("VoucherID");
+                    b.HasKey("VoucherTemplateID");
 
-                    b.ToTable("Vouchers");
+                    b.ToTable("VoucherTemplates");
                 });
 
-            modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
+            modelBuilder.Entity("BussinessObject.Model.VoucherUsage", b =>
                 {
-                    b.Property<int>("VoucherDetailID")
+                    b.Property<int>("VoucherUsageID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VoucherUsageID"));
 
                     b.Property<string>("AccountID")
                         .HasColumnType("nvarchar(450)");
@@ -759,16 +867,24 @@ namespace DataAccessLayer.Migrations
                     b.Property<DateTime>("UsedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("VoucherID")
+                    b.Property<int?>("UserVoucherID")
                         .HasColumnType("int");
 
-                    b.HasKey("VoucherDetailID");
+                    b.HasKey("VoucherUsageID");
 
                     b.HasIndex("AccountID");
 
                     b.HasIndex("GiftID");
 
-                    b.ToTable("VoucherDetails");
+                    b.HasIndex("OrderID")
+                        .IsUnique()
+                        .HasFilter("[OrderID] IS NOT NULL");
+
+                    b.HasIndex("UserVoucherID")
+                        .IsUnique()
+                        .HasFilter("[UserVoucherID] IS NOT NULL");
+
+                    b.ToTable("VoucherUsages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -800,27 +916,33 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7556fd4f-744d-4e08-b07c-890205ffaf23",
+                            Id = "e3d91533-25cf-42e1-9600-3f68836eb946",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "1fb2af06-0d65-4f75-b825-7b3a3a45a172",
+                            Id = "45c48650-bd2d-44d8-8e26-44bbc48ff5ed",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "c2f248b8-9637-4295-8f82-0fc463566634",
+                            Id = "21524af7-eb2c-4a7a-8d14-dda80d5f6908",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "d7920bc8-7a73-4a21-81f2-348284b1d368",
+                            Id = "de3c79b9-fe06-482b-9a78-b8f5c3128da8",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "6c286942-94e6-47ae-9e38-cc90b9982acc",
+                            Name = "Shipper",
+                            NormalizedName = "SHIPPER"
                         });
                 });
 
@@ -939,6 +1061,17 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Subscription");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.Blog", b =>
+                {
+                    b.HasOne("BussinessObject.Model.Account", "Account")
+                        .WithMany("Blogs")
+                        .HasForeignKey("AccountID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.Cart", b =>
                 {
                     b.HasOne("BussinessObject.Model.Account", "Accounts")
@@ -969,6 +1102,17 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("BussinessObject.Model.ImageBlog", b =>
+                {
+                    b.HasOne("BussinessObject.Model.Blog", "Blogs")
+                        .WithMany("ImageBlogs")
+                        .HasForeignKey("BlogID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Blogs");
+                });
+
             modelBuilder.Entity("BussinessObject.Model.ImageProduct", b =>
                 {
                     b.HasOne("BussinessObject.Model.Product", "Products")
@@ -986,12 +1130,6 @@ namespace DataAccessLayer.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("AccountID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BussinessObject.Model.VoucherDetail", "VoucherDetail")
-                        .WithOne("Order")
-                        .HasForeignKey("BussinessObject.Model.Order", "OrderID")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("BussinessObject.Model.Report", "Report")
@@ -1013,8 +1151,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("ShippingInfo");
 
                     b.Navigation("Transaction");
-
-                    b.Navigation("VoucherDetail");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.OrderDetail", b =>
@@ -1121,30 +1257,57 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BussinessObject.Model.Transaction", "Transaction")
+                        .WithOne("Subscription")
+                        .HasForeignKey("BussinessObject.Model.Subscription", "transactionID");
+
                     b.Navigation("SubscriptionPlans");
+
+                    b.Navigation("Transaction");
                 });
 
-            modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
+            modelBuilder.Entity("BussinessObject.Model.UserVoucher", b =>
                 {
                     b.HasOne("BussinessObject.Model.Account", "Account")
-                        .WithMany("VoucherDetails")
+                        .WithMany("UserVouchers")
+                        .HasForeignKey("AccountID");
+
+                    b.HasOne("BussinessObject.Model.VoucherTemplate", "VoucherTemplate")
+                        .WithMany("UserVouchers")
+                        .HasForeignKey("VoucherTemplateID");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("VoucherTemplate");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.VoucherUsage", b =>
+                {
+                    b.HasOne("BussinessObject.Model.Account", "Account")
+                        .WithMany("VoucherUsages")
                         .HasForeignKey("AccountID");
 
                     b.HasOne("BussinessObject.Model.Gift", "Gift")
-                        .WithMany("VoucherDetails")
+                        .WithMany("VoucherUsages")
                         .HasForeignKey("GiftID");
 
-                    b.HasOne("BussinessObject.Model.Voucher", "Voucher")
-                        .WithOne("VoucherDetail")
-                        .HasForeignKey("BussinessObject.Model.VoucherDetail", "VoucherDetailID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasOne("BussinessObject.Model.Order", "Order")
+                        .WithOne("VoucherUsage")
+                        .HasForeignKey("BussinessObject.Model.VoucherUsage", "OrderID")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("BussinessObject.Model.UserVoucher", "UserVoucher")
+                        .WithOne("VoucherUsage")
+                        .HasForeignKey("BussinessObject.Model.VoucherUsage", "UserVoucherID")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Account");
 
                     b.Navigation("Gift");
 
-                    b.Navigation("Voucher");
+                    b.Navigation("Order");
+
+                    b.Navigation("UserVoucher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1200,13 +1363,22 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("BussinessObject.Model.Account", b =>
                 {
+                    b.Navigation("Blogs");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reports");
 
                     b.Navigation("Reviews");
 
-                    b.Navigation("VoucherDetails");
+                    b.Navigation("UserVouchers");
+
+                    b.Navigation("VoucherUsages");
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.Blog", b =>
+                {
+                    b.Navigation("ImageBlogs");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Cart", b =>
@@ -1221,12 +1393,15 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("BussinessObject.Model.Gift", b =>
                 {
-                    b.Navigation("VoucherDetails");
+                    b.Navigation("VoucherUsages");
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("VoucherUsage")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BussinessObject.Model.Product", b =>
@@ -1268,17 +1443,20 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("BussinessObject.Model.Transaction", b =>
                 {
                     b.Navigation("Order");
-                });
 
-            modelBuilder.Entity("BussinessObject.Model.Voucher", b =>
-                {
-                    b.Navigation("VoucherDetail")
+                    b.Navigation("Subscription")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BussinessObject.Model.VoucherDetail", b =>
+            modelBuilder.Entity("BussinessObject.Model.UserVoucher", b =>
                 {
-                    b.Navigation("Order");
+                    b.Navigation("VoucherUsage")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BussinessObject.Model.VoucherTemplate", b =>
+                {
+                    b.Navigation("UserVouchers");
                 });
 #pragma warning restore 612, 618
         }
