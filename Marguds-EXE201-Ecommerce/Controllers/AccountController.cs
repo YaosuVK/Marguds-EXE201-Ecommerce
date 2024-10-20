@@ -56,6 +56,10 @@ namespace Marguds_EXE201_Ecommerce.Controllers
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
             var roles = await _userManager.GetRolesAsync(user);
+            if (roles == null || !roles.Any())
+            {
+                return BadRequest("Sorry, Your account has Proplem to Identify who you are");
+            }
             var token = await _tokenService.createToken(user);
             return Ok(
                 new NewUserDto
@@ -227,14 +231,22 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                     Address = createAccountDto.Address,
                     Phone = createAccountDto.Phone,
                     Image = createAccountDto.Image,
-                    Status = true
+                    Status = true,
+                    EmailConfirmed = true
                 };
+                
+                var role = createAccountDto.Role.ToUpper();
+
+                if (role == "ADMIN")
+                {
+                    return BadRequest("Cannot create account with the role 'Admin'.");
+                }
 
                 var createdUser = await _userManager.CreateAsync(accountApp, createAccountDto.Password);
 
                 if (createdUser.Succeeded)
                 {
-                    var role = createAccountDto.Role.ToUpper();
+                    
                     var roleExists = await _roleManager.RoleExistsAsync(role);
                     if (roleExists)
                     {
