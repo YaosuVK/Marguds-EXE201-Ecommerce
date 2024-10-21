@@ -82,16 +82,16 @@ public class ProductController : ControllerBase
         return await _productService.GetProductsAsync(search, lowPrice, highPrice, category, sortBy, pageIndex, pageSize);
     }
 
-    /*[Authorize(Roles = "Admin")]
+    /*[Authorize(Roles = "Admin")]*/
     [HttpGet]
     [Route("base/GetTopProductInMonth")]
     public async Task<BaseResponse<List<GetTopProductSoldInAMonth>>> GetTopProductsSoldInMonthAsync(int top)
     {
         var result = await _productService.GetTopProductsSoldInMonthAsync(top);
         return result;
-    }*/
+    }
 
-   /* [Authorize(Roles = "Manager")]*/
+    /* [Authorize(Roles = "Manager")]*/
     [HttpGet]
     [Route("base/getProductsForManager")]
     public async Task<BaseResponse<SearchProductResponse>> SearchProductAsync(string? search, int pageIndex, int pageSize)

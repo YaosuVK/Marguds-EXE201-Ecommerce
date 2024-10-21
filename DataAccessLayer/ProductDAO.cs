@@ -179,5 +179,41 @@ namespace DataAccessLayer
             var result = searchProducts.Count();
             return result;
         }
+
+
+        public async Task<List<(string ProductName, int QuantitySold)>> GetTopProductsSoldInMonthAsync(int top)
+        {
+            if (top == 0 || top == null)
+            {
+                throw new ArgumentException($"Please input/ correct top!");
+            }
+            /*DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);*/
+            // Lấy ngày hiện tại
+            DateTime today = DateTime.Today;
+
+            // Xác định ngày đầu tháng và ngày cuối tháng
+            DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+            DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            var topProducts = await _context.Products
+            .Select(p => new
+            {
+                ProductName = p.Name,
+                QuantitySold = p.OrderDetails
+                    .Where(od => od.Order.OrderDate.Date >= startOfMonth.Date
+                                 && od.Order.OrderDate.Date <= endOfMonth.Date
+                                 && od.Order.Status == OrderStatus.Completed) // Filter by completed orders
+                    .Sum(od => od.Quantity)
+            })
+            .OrderByDescending(p => p.QuantitySold)
+            .Take(top)
+            .ToListAsync();
+
+            List<(string ProductName, int QuantitySold)> topNProducts = topProducts
+            .Select(p => (p.ProductName, p.QuantitySold))
+            .ToList();
+            return topNProducts;
+        }
     }
 }
