@@ -35,10 +35,7 @@ namespace BussinessObject.Model
 
         public Report? Report { get; set; }
 
-        
-        public int VoucherDetailID { get; set; }
-
-        public VoucherDetail VoucherDetail { get; set; }
+        public VoucherUsage VoucherUsage { get; set; }
 
     }
 

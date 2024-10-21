@@ -116,13 +116,14 @@ namespace DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vouchers",
+                name: "VoucherTemplates",
                 columns: table => new
                 {
-                    VoucherID = table.Column<int>(type: "int", nullable: false)
+                    VoucherTemplateID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MilestoneAmount = table.Column<double>(type: "float", nullable: false),
                     VoucherTypes = table.Column<int>(type: "int", nullable: false),
-                    VoucherCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsMembership = table.Column<bool>(type: "bit", nullable: false),
                     DiscountPercentage = table.Column<double>(type: "float", nullable: false),
@@ -130,12 +131,11 @@ namespace DataAccessLayer.Migrations
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
-                    VoucherDetailID = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vouchers", x => x.VoucherID);
+                    table.PrimaryKey("PK_VoucherTemplates", x => x.VoucherTemplateID);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,9 +199,10 @@ namespace DataAccessLayer.Migrations
                 {
                     SubcriptionID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PlanID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlanID = table.Column<int>(type: "int", nullable: true),
                     SubscriptionPlansPlanID = table.Column<int>(type: "int", nullable: false),
+                    transactionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
@@ -215,6 +216,11 @@ namespace DataAccessLayer.Migrations
                         principalTable: "SubcriptionPlans",
                         principalColumn: "PlanID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Transaction_transactionID",
+                        column: x => x.transactionID,
+                        principalTable: "Transaction",
+                        principalColumn: "ResponseId");
                 });
 
             migrationBuilder.CreateTable(
@@ -360,6 +366,31 @@ namespace DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Blogs",
+                columns: table => new
+                {
+                    BlogID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Blogs", x => x.BlogID);
+                    table.ForeignKey(
+                        name: "FK_Blogs_AspNetUsers_AccountID",
+                        column: x => x.AccountID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Carts",
                 columns: table => new
                 {
@@ -493,37 +524,51 @@ namespace DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VoucherDetails",
+                name: "UserVouchers",
                 columns: table => new
                 {
-                    VoucherDetailID = table.Column<int>(type: "int", nullable: false),
-                    AccountID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    VoucherID = table.Column<int>(type: "int", nullable: false),
-                    GiftID = table.Column<int>(type: "int", nullable: false),
-                    OrderID = table.Column<int>(type: "int", nullable: false),
-                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
-                    UsedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UserVoucherID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VoucherCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    VoucherTemplateID = table.Column<int>(type: "int", nullable: true),
+                    AccountID = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VoucherDetails", x => x.VoucherDetailID);
+                    table.PrimaryKey("PK_UserVouchers", x => x.UserVoucherID);
                     table.ForeignKey(
-                        name: "FK_VoucherDetails_AspNetUsers_AccountID",
+                        name: "FK_UserVouchers_AspNetUsers_AccountID",
                         column: x => x.AccountID,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_VoucherDetails_Gifts_GiftID",
-                        column: x => x.GiftID,
-                        principalTable: "Gifts",
-                        principalColumn: "GiftID",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_UserVouchers_VoucherTemplates_VoucherTemplateID",
+                        column: x => x.VoucherTemplateID,
+                        principalTable: "VoucherTemplates",
+                        principalColumn: "VoucherTemplateID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImageBlog",
+                columns: table => new
+                {
+                    ImageBlogsID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BlogID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImageBlog", x => x.ImageBlogsID);
                     table.ForeignKey(
-                        name: "FK_VoucherDetails_Vouchers_VoucherDetailID",
-                        column: x => x.VoucherDetailID,
-                        principalTable: "Vouchers",
-                        principalColumn: "VoucherID");
+                        name: "FK_ImageBlog_Blogs_BlogID",
+                        column: x => x.BlogID,
+                        principalTable: "Blogs",
+                        principalColumn: "BlogID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -557,7 +602,8 @@ namespace DataAccessLayer.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    OrderID = table.Column<int>(type: "int", nullable: false),
+                    OrderID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Total = table.Column<double>(type: "float", nullable: false),
@@ -565,8 +611,7 @@ namespace DataAccessLayer.Migrations
                     AccountID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     transactionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ShippingInforID = table.Column<int>(type: "int", nullable: true),
-                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
-                    VoucherDetailID = table.Column<int>(type: "int", nullable: false)
+                    PaymentMethod = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -592,11 +637,6 @@ namespace DataAccessLayer.Migrations
                         column: x => x.transactionID,
                         principalTable: "Transaction",
                         principalColumn: "ResponseId");
-                    table.ForeignKey(
-                        name: "FK_Orders_VoucherDetails_OrderID",
-                        column: x => x.OrderID,
-                        principalTable: "VoucherDetails",
-                        principalColumn: "VoucherDetailID");
                 });
 
             migrationBuilder.CreateTable(
@@ -628,15 +668,54 @@ namespace DataAccessLayer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "VoucherUsages",
+                columns: table => new
+                {
+                    VoucherUsageID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserVoucherID = table.Column<int>(type: "int", nullable: true),
+                    GiftID = table.Column<int>(type: "int", nullable: true),
+                    OrderID = table.Column<int>(type: "int", nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    UsedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VoucherUsages", x => x.VoucherUsageID);
+                    table.ForeignKey(
+                        name: "FK_VoucherUsages_AspNetUsers_AccountID",
+                        column: x => x.AccountID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_VoucherUsages_Gifts_GiftID",
+                        column: x => x.GiftID,
+                        principalTable: "Gifts",
+                        principalColumn: "GiftID");
+                    table.ForeignKey(
+                        name: "FK_VoucherUsages_Orders_OrderID",
+                        column: x => x.OrderID,
+                        principalTable: "Orders",
+                        principalColumn: "OrderID");
+                    table.ForeignKey(
+                        name: "FK_VoucherUsages_UserVouchers_UserVoucherID",
+                        column: x => x.UserVoucherID,
+                        principalTable: "UserVouchers",
+                        principalColumn: "UserVoucherID");
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3858ef2c-e14b-4d60-b7c0-54ede0b261ae", null, "Manager", "MANAGER" },
-                    { "aa44a736-d730-4362-874b-3bd28769ba2a", null, "Customer", "CUSTOMER" },
-                    { "beb51427-1dbe-43d4-861b-cfce9e40010b", null, "Admin", "ADMIN" },
-                    { "f77d34fa-e8ba-4ea0-9434-d4e6a1291c23", null, "Staff", "STAFF" }
+                    { "21524af7-eb2c-4a7a-8d14-dda80d5f6908", null, "Staff", "STAFF" },
+                    { "45c48650-bd2d-44d8-8e26-44bbc48ff5ed", null, "Customer", "CUSTOMER" },
+                    { "6c286942-94e6-47ae-9e38-cc90b9982acc", null, "Shipper", "SHIPPER" },
+                    { "de3c79b9-fe06-482b-9a78-b8f5c3128da8", null, "Manager", "MANAGER" },
+                    { "e3d91533-25cf-42e1-9600-3f68836eb946", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -686,6 +765,11 @@ namespace DataAccessLayer.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Blogs_AccountID",
+                table: "Blogs",
+                column: "AccountID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CartID",
                 table: "CartItems",
                 column: "CartID");
@@ -699,6 +783,11 @@ namespace DataAccessLayer.Migrations
                 name: "IX_Carts_AccountID",
                 table: "Carts",
                 column: "AccountID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageBlog_BlogID",
+                table: "ImageBlog",
+                column: "BlogID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ImageProducts_ProductID",
@@ -787,14 +876,45 @@ namespace DataAccessLayer.Migrations
                 column: "SubscriptionPlansPlanID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VoucherDetails_AccountID",
-                table: "VoucherDetails",
+                name: "IX_Subscriptions_transactionID",
+                table: "Subscriptions",
+                column: "transactionID",
+                unique: true,
+                filter: "[transactionID] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserVouchers_AccountID",
+                table: "UserVouchers",
                 column: "AccountID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_VoucherDetails_GiftID",
-                table: "VoucherDetails",
+                name: "IX_UserVouchers_VoucherTemplateID",
+                table: "UserVouchers",
+                column: "VoucherTemplateID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherUsages_AccountID",
+                table: "VoucherUsages",
+                column: "AccountID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherUsages_GiftID",
+                table: "VoucherUsages",
                 column: "GiftID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherUsages_OrderID",
+                table: "VoucherUsages",
+                column: "OrderID",
+                unique: true,
+                filter: "[OrderID] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherUsages_UserVoucherID",
+                table: "VoucherUsages",
+                column: "UserVoucherID",
+                unique: true,
+                filter: "[UserVoucherID] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -819,6 +939,9 @@ namespace DataAccessLayer.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
+                name: "ImageBlog");
+
+            migrationBuilder.DropTable(
                 name: "ImageProducts");
 
             migrationBuilder.DropTable(
@@ -834,13 +957,25 @@ namespace DataAccessLayer.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
+                name: "VoucherUsages");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Carts");
 
             migrationBuilder.DropTable(
+                name: "Blogs");
+
+            migrationBuilder.DropTable(
+                name: "Gifts");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "UserVouchers");
 
             migrationBuilder.DropTable(
                 name: "Reports");
@@ -849,31 +984,25 @@ namespace DataAccessLayer.Migrations
                 name: "ShippingInfo");
 
             migrationBuilder.DropTable(
-                name: "Transaction");
-
-            migrationBuilder.DropTable(
-                name: "VoucherDetails");
-
-            migrationBuilder.DropTable(
-                name: "Products");
+                name: "VoucherTemplates");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Gifts");
-
-            migrationBuilder.DropTable(
-                name: "Vouchers");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Subscriptions");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
                 name: "SubcriptionPlans");
+
+            migrationBuilder.DropTable(
+                name: "Transaction");
         }
     }
 }

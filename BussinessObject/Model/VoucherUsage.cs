@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace BussinessObject.Model
 {
-    public class VoucherDetail
+    public class VoucherUsage
     {
         [Key]
-        public int VoucherDetailID { get; set; }
+        public int VoucherUsageID { get; set; }
 
         [ForeignKey("AccountID")]
         public string? AccountID { get; set; }
         public Account Account { get; set; }
 
 
-        [ForeignKey("VoucherID")]
-        public int? VoucherID { get; set; }
-        public Voucher Voucher { get; set; }
+        [ForeignKey("UserVoucherID")]
+        public int? UserVoucherID { get; set; }
+        public UserVoucher UserVoucher { get; set; }
 
 
         [ForeignKey("GiftID")]
