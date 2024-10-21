@@ -33,7 +33,10 @@ namespace Repository.Repository
         {
             return await _productDao.GetProductByIdAsync(id);
         }
-
+        public async Task<Product?> GetProductUpdateByID(int id)
+        {
+            return await _productDao.GetProductUpdateByIdAsync(id);
+        }
         public async Task<Product> AddAsync(Product entity)
         {
             return await _productDao.AddAsync(entity);

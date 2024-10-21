@@ -15,5 +15,6 @@ namespace Repository.IRepository
         /*Task<List<(string ProductName, int QuantitySold)>> GetTopProductsSoldInMonthAsync(int top);*/
         Task<IEnumerable<Product>> SearchProductAsync(string? search, int pageIndex, int pageSize);
         int GetTotalPagesAsync(string search, List<Product> products, int pageSize);
+        Task<Product?> GetProductUpdateByID(int id);
     }
 }

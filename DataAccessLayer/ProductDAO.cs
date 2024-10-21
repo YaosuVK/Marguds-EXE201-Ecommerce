@@ -39,6 +39,15 @@ namespace DataAccessLayer
                 .SingleOrDefaultAsync(p => p.ProductID == id);
         }
 
+        public async Task<Product?> GetProductUpdateByIdAsync(int id)
+        {
+            return await _context.Set<Product>()
+                .Include(p => p.Category)
+                .Include(p => p.ImageProducts)
+                .Include(p => p.Ratings)
+                .SingleOrDefaultAsync(p => p.ProductID == id);
+        }
+
         public async Task<bool> DeleteTest(Product product)
         {
             product.Status = false;

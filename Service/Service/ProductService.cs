@@ -63,7 +63,7 @@ namespace Service.Service
 
         public async Task<BaseResponse<UpdateProductRequest>> UpdateProductFromBase(int id, UpdateProductRequest request)
         {
-            Product existingProduct = await _productRepository.GetByIdAsync(id);
+            Product existingProduct = await _productRepository.GetProductUpdateByID(id);
             _mapper.Map(request, existingProduct);
             await _productRepository.UpdateAsync(existingProduct);
 
