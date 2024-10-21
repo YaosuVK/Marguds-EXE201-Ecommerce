@@ -20,5 +20,17 @@ namespace Repository.IRepository
         public Task UpdateOrderAsync(Order order);
         public Task<IEnumerable<Order>> GetAllOrderAsync(string? search, DateTime? date, OrderStatus? status);
 
+
+
+
+        // For admin DashBoard
+        public Task<(double totalAmount, double totalProfit, int totalProducts)> GetTotalAmountTotalProductsOfWeek();
+        public Task<(int ordersReturnOrCancell, int orders, int ordersComplete, int ordersCancell, int ordersReturnRefund, int ordersReport)> GetStaticOrders();
+        public Task<List<(string ProductName, int QuantitySold)>> GetTopProductsSoldInMonthAsync();
+        public Task<List<(string Month, double Revenue)>> GetStoreRevenueByMonthAsync();
+        Task<List<(object span, int totalOrders, double totalOrdersAmount)>> GetTotalOrdersTotalOrdersAmountAsync
+            (DateTime startDate, DateTime endDate, string? timeSpanType);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     }
 }

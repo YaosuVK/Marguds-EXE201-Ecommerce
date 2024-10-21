@@ -86,6 +86,17 @@ public class CategoryController : ControllerBase
         }
         return await _categoryService.GetSearchCategoryFromBase(search, pageIndex, pageSize);
     }
+    
+    [HttpDelete]
+    [Route("DeleteCategory/{id}")]
+    public async Task<ActionResult<BaseResponse<GetAllCategoryResponse>>> DeleteCategoryByIdFromBase(int id)
+    {
+        if (id == 0 || id == null)
+        {
+            return BadRequest("Please Input Id!");
+        }
+        return await _categoryService.DeleteCategoryDetailByIdFromBase(id);
+    }
 
 }
 

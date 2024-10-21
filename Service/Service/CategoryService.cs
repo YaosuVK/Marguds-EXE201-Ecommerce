@@ -34,6 +34,22 @@ namespace Service.Service
             return new BaseResponse<CreateCategoryRequest>("Create category as base success", StatusCodeEnum.Created_201, response);
         }
 
+        public async Task<BaseResponse<GetAllCategoryResponse>> DeleteCategoryDetailByIdFromBase(int id)
+        {
+            var category = await _categoryRepository.DeleteCategory(id);
+            if (category == null) 
+            {
+                return new BaseResponse<GetAllCategoryResponse>("Category does not exist or Still have Product use that Category!",
+                StatusCodeEnum.BadGateway_502, null);
+            }
+            else
+            {
+                var result = _mapper.Map<GetAllCategoryResponse>(category);
+                return new BaseResponse<GetAllCategoryResponse>("Delete Category success", StatusCodeEnum.OK_200,
+                result);
+            }
+        }
+
         public async Task<BaseResponse<IEnumerable<GetAllCategoryResponse>>> GetAllCategoryFromBase()
         {
 
@@ -57,7 +73,7 @@ namespace Service.Service
         {
             Category category = await _categoryRepository.GetByIdAsync(id);
             var result = _mapper.Map<GetAllCategoryResponse>(category);
-            return new BaseResponse<GetAllCategoryResponse>("Get product details success", StatusCodeEnum.OK_200,
+            return new BaseResponse<GetAllCategoryResponse>("Get category details success", StatusCodeEnum.OK_200,
                 result);
         }
 

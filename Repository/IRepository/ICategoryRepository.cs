@@ -11,6 +11,7 @@ namespace Repository.IRepository
     public interface ICategoryRepository : IBaseRepository<Category>
     {
         Task<IEnumerable<Category>> SearchCategoryAsync(string? search, int pageIndex, int pageSize);
+        Task<Category> DeleteCategory(int id);
 
     }
 }

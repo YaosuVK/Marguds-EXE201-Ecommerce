@@ -62,5 +62,34 @@ namespace Repository.Repository
         {
             return await _orderDao.GetOrdersByStatusAsync(status);
         }
+
+
+
+        //For admin dashboard
+        public async Task<(double totalAmount, double totalProfit, int totalProducts)> GetTotalAmountTotalProductsOfWeek()
+        {
+            return await _orderDao.GetTotalAmountTotalProductsOfWeek();
+        }
+
+        public async Task<List<(string ProductName, int QuantitySold)>> GetTopProductsSoldInMonthAsync()
+        {
+            return await _orderDao.GetTopProductsSoldInMonthAsync();
+        }
+
+        public async Task<List<(string Month, double Revenue)>> GetStoreRevenueByMonthAsync()
+        {
+            return await _orderDao.GetStoreRevenueByMonthAsync();
+        }
+
+        public async Task<(int ordersReturnOrCancell, int orders, int ordersComplete, int ordersCancell, int ordersReturnRefund, int ordersReport)> GetStaticOrders()
+        {
+            return await _orderDao.GetStaticOrders();
+        }
+
+        public async Task<List<(object span, int totalOrders, double totalOrdersAmount)>> GetTotalOrdersTotalOrdersAmountAsync
+            (DateTime startDate, DateTime endDate, string? timeSpanType)
+        {
+            return await _orderDao.GetTotalOrdersTotalOrdersAmountAsync(startDate, endDate, timeSpanType);
+        }
     }
 }

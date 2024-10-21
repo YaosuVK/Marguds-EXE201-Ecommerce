@@ -16,5 +16,6 @@ namespace Service.IService
         Task<BaseResponse<UpdateCategoryRequest>> UpdateCategoryFromBase(int id, UpdateCategoryRequest categoryRequest);
         Task<BaseResponse<CreateCategoryRequest>> CreateCategoryFromBase(CreateCategoryRequest categoryRequest);
         Task<BaseResponse<IEnumerable<GetAllCategoryResponse>>> GetSearchCategoryFromBase(string? search, int pageIndex, int pageSize);
+        Task<BaseResponse<GetAllCategoryResponse>> DeleteCategoryDetailByIdFromBase(int id);
     }
 }
