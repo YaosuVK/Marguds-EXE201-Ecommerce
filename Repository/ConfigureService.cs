@@ -30,10 +30,13 @@ namespace Repository
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddTransient<IReportRepository, ReportRepository>();
-            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddScoped<IGiftRepository, GiftRepository>();
             services.AddScoped<ISubcriptionPlanRepository, SubcriptionPlanRepository>();
+            services.AddScoped<IVoucherTemplateRepository, VoucherTemplateRepository>();
+            services.AddScoped<IUserVoucherRepository, UserVoucherRepository>();
+            services.AddScoped<IVoucherUsageRepository, VoucherUsageRepository>();
+            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
 
             //

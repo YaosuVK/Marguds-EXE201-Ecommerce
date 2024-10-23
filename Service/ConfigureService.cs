@@ -40,6 +40,9 @@ namespace Service
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGiftService, GiftService>();
             services.AddScoped<ISubcriptionPlanService, SubcriptionPlanService>();
+            services.AddScoped<IVoucherTemplateService, VoucherTemplateService>();
+            services.AddScoped<IUserVoucherService, UserVoucherService>();
+            services.AddScoped<IVoucherUsageService, VoucherUsageService>();
 
             return services;
         }

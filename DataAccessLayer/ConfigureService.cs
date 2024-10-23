@@ -27,6 +27,9 @@ namespace DataAccessLayer
             services.AddScoped<ShippingInfo>();
             services.AddScoped<Transaction>();
             services.AddScoped<Rating>();
+            services.AddScoped<VoucherTemplateDAO>();
+            services.AddScoped<UserVoucherDAO>();
+            services.AddScoped<VoucherUsageDAO>();
             services.AddScoped(typeof(IBaseDAO<>), typeof(BaseDAO<>));
             return services;
         }
