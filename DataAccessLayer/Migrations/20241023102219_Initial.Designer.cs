@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    [Migration("20241021133951_Db_Init7")]
-    partial class Db_Init7
+    [Migration("20241023102219_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -916,31 +916,31 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0980a198-e2b9-4708-ab48-75ee3036f4e9",
+                            Id = "3007fd99-62e0-4405-bdb6-eab94848a82f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "435236b4-952c-4685-9f9b-a511fb32c484",
+                            Id = "c7627d07-f4de-4d40-8d1d-5c39c5912e7c",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "9911cad7-c8a7-48d9-9e71-17d3342c06aa",
+                            Id = "6defb436-d074-4382-82cc-0526d80c729c",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "8b82bc41-a6ad-40f1-8e06-89dcb49caeec",
+                            Id = "0ca200fb-aad3-4a7d-8ab1-092cca482c39",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "eb4b2f73-8ccf-44ec-8280-96997f902b56",
+                            Id = "3fd7d242-2ec8-4763-9d7e-cbf3f5b990e1",
                             Name = "Shipper",
                             NormalizedName = "SHIPPER"
                         });

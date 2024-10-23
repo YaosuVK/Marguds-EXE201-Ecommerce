@@ -711,11 +711,11 @@ namespace DataAccessLayer.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "21524af7-eb2c-4a7a-8d14-dda80d5f6908", null, "Staff", "STAFF" },
-                    { "45c48650-bd2d-44d8-8e26-44bbc48ff5ed", null, "Customer", "CUSTOMER" },
-                    { "6c286942-94e6-47ae-9e38-cc90b9982acc", null, "Shipper", "SHIPPER" },
-                    { "de3c79b9-fe06-482b-9a78-b8f5c3128da8", null, "Manager", "MANAGER" },
-                    { "e3d91533-25cf-42e1-9600-3f68836eb946", null, "Admin", "ADMIN" }
+                    { "0ca200fb-aad3-4a7d-8ab1-092cca482c39", null, "Manager", "MANAGER" },
+                    { "3007fd99-62e0-4405-bdb6-eab94848a82f", null, "Admin", "ADMIN" },
+                    { "3fd7d242-2ec8-4763-9d7e-cbf3f5b990e1", null, "Shipper", "SHIPPER" },
+                    { "6defb436-d074-4382-82cc-0526d80c729c", null, "Staff", "STAFF" },
+                    { "c7627d07-f4de-4d40-8d1d-5c39c5912e7c", null, "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(
