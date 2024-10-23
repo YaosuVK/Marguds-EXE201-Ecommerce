@@ -4,6 +4,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(MargudsContext))]
-    partial class MargudsContextModelSnapshot : ModelSnapshot
+    [Migration("20241021133314_Db_Init8")]
+    partial class Db_Init8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -913,31 +916,31 @@ namespace DataAccessLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0980a198-e2b9-4708-ab48-75ee3036f4e9",
+                            Id = "c28a4b9f-5934-45e6-bcd2-222b8f2bbf4e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "435236b4-952c-4685-9f9b-a511fb32c484",
+                            Id = "85ff1ee2-a232-479c-a047-b8e8cb697808",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "9911cad7-c8a7-48d9-9e71-17d3342c06aa",
+                            Id = "8ea0c24a-5621-4ab7-a7c7-a56fe98a71ee",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "8b82bc41-a6ad-40f1-8e06-89dcb49caeec",
+                            Id = "00a92123-619e-4a36-a71b-510742d383f6",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "eb4b2f73-8ccf-44ec-8280-96997f902b56",
+                            Id = "f99d2e2f-b670-4178-8014-044653d6b8e0",
                             Name = "Shipper",
                             NormalizedName = "SHIPPER"
                         });

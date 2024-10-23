@@ -46,41 +46,41 @@ public class OrderController : ControllerBase
         return await _orderService.GetOrderByIdAsync(orderId);
     }
 
-    /*//for admin Dashboard
-    [Authorize(Roles = "Admin")]
+    //for admin Dashboard
+    /*[Authorize(Roles = "Admin")]*/
     [HttpGet("adminDashBoard/GetTotalAmountTotalProductsOfWeek")]
     public async Task<BaseResponse<GetTotalAmountTotalProducts>> GetTotalAmountTotalProductsOfWeek()
     {
         return await _orderService.GetTotalAmountTotalProductsOfWeek();
     }
 
-    [Authorize(Roles = "Admin")]
+    /*[Authorize(Roles = "Admin")]*/
     [HttpGet("adminDashBoard/GetStaticOrders")]
     public async Task<BaseResponse<GetStaticOrders>> GetStaticOrders()
     {
         return await _orderService.GetStaticOrders();
     }
 
-    [Authorize(Roles = "Admin")]
+    /*[Authorize(Roles = "Admin")]*/
     [HttpGet("adminDashBoard/GetTopProductsSoldInMonth")]
     public async Task<BaseResponse<GetTopProductsSoldInMonth>> GetTopProductsSoldInMonthAsync()
     {
         return await _orderService.GetTopProductsSoldInMonthAsync();
     }
 
-    [Authorize(Roles = "Admin")]
+    /*[Authorize(Roles = "Admin")]*/
     [HttpGet("adminDashBoard/GetStoreRevenueByMonth")]
     public async Task<BaseResponse<GetStoreRevenueByMonth>> GetStoreRevenueByMonthAsync()
     {
         return await _orderService.GetStoreRevenueByMonthAsync();
     }
 
-    [Authorize(Roles = "Admin")]
+    /*[Authorize(Roles = "Admin")]*/
     [HttpGet("adminDashBoard/GetTotalOrdersTotalOrdersAmount")]
     public async Task<BaseResponse<List<GetTotalOrdersTotalOrdersAmount>>> GetTotalOrdersTotalOrdersAmountAsync
         (DateTime startDate, DateTime endDate, string? timeSpanType)
     {
         return await _orderService.GetTotalOrdersTotalOrdersAmountAsync(startDate, endDate, timeSpanType);
-    }*/
+    }
 }
 

@@ -63,7 +63,7 @@ namespace Service.Service
 
         public async Task<BaseResponse<UpdateProductRequest>> UpdateProductFromBase(int id, UpdateProductRequest request)
         {
-            Product existingProduct = await _productRepository.GetByIdAsync(id);
+            Product existingProduct = await _productRepository.GetProductUpdateByID(id);
             _mapper.Map(request, existingProduct);
             await _productRepository.UpdateAsync(existingProduct);
 
@@ -103,7 +103,7 @@ namespace Service.Service
             return new BaseResponse<AddProductRequest>("Create product as base success", StatusCodeEnum.Created_201, response);
         }
 
-        /*public async Task<BaseResponse<List<GetTopProductSoldInAMonth>>> GetTopProductsSoldInMonthAsync(int top)
+        public async Task<BaseResponse<List<GetTopProductSoldInAMonth>>> GetTopProductsSoldInMonthAsync(int top)
         {
             var products = await _productRepository.GetTopProductsSoldInMonthAsync(top);
             var response = products.Select(p => new GetTopProductSoldInAMonth
@@ -116,7 +116,7 @@ namespace Service.Service
                 return new BaseResponse<List<GetTopProductSoldInAMonth>>("Get Top Product In A Month Fail", StatusCodeEnum.BadRequest_400, response);
             }
             return new BaseResponse<List<GetTopProductSoldInAMonth>>("Get Top Product In A Month Success", StatusCodeEnum.OK_200, response);
-        }*/
+        }
 
         private async Task<double> GetRating(int productId)
         {

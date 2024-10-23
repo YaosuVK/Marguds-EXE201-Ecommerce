@@ -20,7 +20,7 @@ namespace Service.IService
         Task<Boolean> DeleteTest(int id);
         Task<BaseResponse<UpdateProductRequest>> UpdateProductFromBase(int id, UpdateProductRequest product);
         Task<BaseResponse<IEnumerable<GetFilterProductResponse>>> GetProductsAsync(string? search, double? lowPrice, double? highPrice, int? category, string? sortBy, int? pageIndex, int? pageSize);
-        /*Task<BaseResponse<List<GetTopProductSoldInAMonth>>> GetTopProductsSoldInMonthAsync(int top);*/
+        Task<BaseResponse<List<GetTopProductSoldInAMonth>>> GetTopProductsSoldInMonthAsync(int top);
         Task<BaseResponse<SearchProductResponse>> SearchProductAsync(string? search, int pageIndex, int pageSize);
         int GetTotalPagesAsync(string search, List<Product> products, int pageSize);
     }
