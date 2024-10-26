@@ -9,6 +9,7 @@ using Service.RequestAndResponse.Request.Product;
 using Service.RequestAndResponse.Request.Rating;
 using Service.RequestAndResponse.Request.Report;
 using Service.RequestAndResponse.Request.SubcriptionPlan;
+using Service.RequestAndResponse.Request.VoucherTemplate;
 using Service.RequestAndResponse.Response.Account;
 using Service.RequestAndResponse.Response.Blog;
 using Service.RequestAndResponse.Response.Cart;
@@ -24,6 +25,7 @@ using Service.RequestAndResponse.Response.Report;
 using Service.RequestAndResponse.Response.Shipping;
 using Service.RequestAndResponse.Response.SubcriptionPlan;
 using Service.RequestAndResponse.Response.Transaction;
+using Service.RequestAndResponse.Response.VoucherTemplate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,6 +102,11 @@ namespace Service.Mapping
             CreateMap<SubcriptionPlan, GetAllSubcriptionPlanResponse>();
             CreateMap<CreateSubcriptionPlanRequest, SubcriptionPlan>().ReverseMap();
             CreateMap<UpdateSubcriptionPlanRequest, SubcriptionPlan>().ReverseMap();
+
+            CreateMap<VoucherTemplate, GetAllVoucherTemplateResponse>(); // For getting all voucher templates
+            CreateMap<CreateVoucherTemplateRequest, VoucherTemplate>(); // For creating a voucher template
+            CreateMap<UpdateVoucherTemplateRequest, VoucherTemplate>(); // For updating a voucher template
+            CreateMap<VoucherTemplate, GetVoucherTemplateByIdResponse>(); // For getting a specific voucher template by ID
 
             /*CreateMap<CreateNewUserRequest, AccountApplication>().ReverseMap();
             CreateMap<AccountApplication, CreateNewUserResponse>().ReverseMap();
