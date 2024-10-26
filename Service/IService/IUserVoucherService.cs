@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Service.RequestAndResponse.BaseResponse;
+using Service.RequestAndResponse.Request.UserVoucher;
+using Service.RequestAndResponse.Response.UserVoucher;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +11,10 @@ namespace Service.IService
 {
     public interface IUserVoucherService
     {
+        Task<BaseResponse<string>> AddUserVoucherAsync(CreateUserVoucherRequest request);
+        Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserVouchersAsync();
+        Task<BaseResponse<GetUserVoucherByIdResponse?>> GetUserVoucherByIdAsync(int id);
+        Task<BaseResponse<string>> UpdateUserVoucherAsync(UpdateUserVoucherRequest request);
+        Task<BaseResponse<string>> DeleteUserVoucherAsync(int id);
     }
 }
