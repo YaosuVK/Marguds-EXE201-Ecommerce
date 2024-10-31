@@ -108,8 +108,10 @@ namespace Service.Mapping
             CreateMap<UpdateSubcriptionPlanRequest, SubcriptionPlan>().ReverseMap();
 
             CreateMap<VoucherTemplate, GetAllVoucherTemplateResponse>(); // For getting all voucher templates
-            CreateMap<CreateVoucherTemplateRequest, VoucherTemplate>(); // For creating a voucher template
-            CreateMap<UpdateVoucherTemplateRequest, VoucherTemplate>(); // For updating a voucher template
+            CreateMap<CreateVoucherTemplateRequest, VoucherTemplate>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now)); // For creating a voucher template
+            CreateMap<UpdateVoucherTemplateRequest, VoucherTemplate>()
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.Now)); // For updating a voucher template
             CreateMap<VoucherTemplate, GetVoucherTemplateByIdResponse>(); // For getting a specific voucher template by ID
 
             CreateMap<UserVoucher, GetAllUserVoucherResponse>(); // For retrieving all user vouchers
