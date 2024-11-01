@@ -114,7 +114,10 @@ namespace Service.Mapping
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.Now)); // For updating a voucher template
             CreateMap<VoucherTemplate, GetVoucherTemplateByIdResponse>(); // For getting a specific voucher template by ID
 
-            CreateMap<UserVoucher, GetAllUserVoucherResponse>(); // For retrieving all user vouchers
+            CreateMap<UserVoucher, GetAllUserVoucherResponse>() // For retrieving all user vouchers
+                .ForMember(dest => dest.VoucherTypes, opt => opt.MapFrom(src => src.VoucherTemplate.VoucherTypes))
+                .ForMember(dest => dest.IsMembership, opt => opt.MapFrom(src => src.VoucherTemplate.IsMembership))
+                .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.VoucherTemplate.DiscountPercentage)); 
             CreateMap<CreateUserVoucherRequest, UserVoucher>(); // For creating a user voucher
             CreateMap<UpdateUserVoucherRequest, UserVoucher>(); // For updating a user voucher
             CreateMap<UserVoucher, GetUserVoucherByIdResponse>(); // For retrieving a specific user voucher by ID
