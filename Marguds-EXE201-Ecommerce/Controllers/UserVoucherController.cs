@@ -33,12 +33,12 @@ namespace Marguds_EXE201_Ecommerce.Controllers
             return await _userVoucherService.GetUserVoucherByIdAsync(id);
         }
 
-        //// POST: api/uservoucher
-        //[HttpPost]
-        //public async Task<BaseResponse<string>> CreateUserVoucherAsync([FromBody] CreateUserVoucherRequest request)
-        //{
-        //    return await _userVoucherService.AddUserVoucherAsync(request);
-        //}
+        // POST: api/uservoucher
+        [HttpPost]
+        public async Task<BaseResponse<string>> CreateUserVoucherAsync([FromBody] CreateUserVoucherRequest request)
+        {
+            return await _userVoucherService.AddUserVoucherAsync(request);
+        }
 
         // PUT: api/uservoucher
         [HttpPut]
