@@ -8,6 +8,7 @@ using Service.RequestAndResponse.Request.UserVoucher;
 using Service.RequestAndResponse.Response.UserVoucher;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Service.Service
@@ -29,6 +30,7 @@ namespace Service.Service
             try
             {
                 var userVoucher = _mapper.Map<UserVoucher>(request);
+                userVoucher.VoucherCode = GenerateVoucherCode();
                 await _userVoucherRepository.AddAsync(userVoucher);
 
                 return new BaseResponse<string>(
@@ -182,5 +184,22 @@ namespace Service.Service
             }
         }
 
+        //////////////////////////////////////////
+        private static Random random = new Random();
+
+        public string GenerateVoucherCode(int length = 8)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            StringBuilder voucherCode = new StringBuilder("MG");
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = random.Next(chars.Length);
+                voucherCode.Append(chars[index]);
+            }
+
+            return voucherCode.ToString();
+        }
+        /////////////////////////////////////////
     }
 }

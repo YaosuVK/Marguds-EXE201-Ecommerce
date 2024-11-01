@@ -9,7 +9,7 @@ namespace Service.RequestAndResponse.Request.UserVoucher
     public class CreateUserVoucherRequest
     {
 
-        public string VoucherCode { get; set; }
+        //public string VoucherCode { get; set; }
 
         public DateTime StartedAt { get; set; }
         public DateTime ExpiredAt { get; set; }
