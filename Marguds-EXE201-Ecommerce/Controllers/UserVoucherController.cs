@@ -53,5 +53,11 @@ namespace Marguds_EXE201_Ecommerce.Controllers
         {
             return await _userVoucherService.DeleteUserVoucherAsync(id);
         }
+        // GET: api/uservoucher/unused/{accountId}
+        [HttpGet("unused/{accountId}")]
+        public async Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId)
+        {
+            return await _userVoucherService.GetAllUserUnusedVouchersAsync(accountId);
+        }
     }
 }

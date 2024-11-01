@@ -159,5 +159,28 @@ namespace Service.Service
                 );
             }
         }
+        public async Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId)
+        {
+            try
+            {
+                var userVouchers = await _userVoucherRepository.GetAllUserUnusedVouchersAsync(accountId);
+                var response = _mapper.Map<IEnumerable<GetAllUserVoucherResponse>>(userVouchers);
+
+                return new BaseResponse<IEnumerable<GetAllUserVoucherResponse>>(
+                    "Unused user vouchers retrieved successfully.",
+                    StatusCodeEnum.OK_200,
+                    response
+                );
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<GetAllUserVoucherResponse>>(
+                    $"Error: {ex.Message}",
+                    StatusCodeEnum.InternalServerError_500,
+                    null
+                );
+            }
+        }
+
     }
 }
