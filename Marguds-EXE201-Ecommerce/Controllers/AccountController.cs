@@ -263,6 +263,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                             return Ok(
                                 new NewUserDto
                                 {
+                                    UserID = accountApp.Id,
                                     UserName = accountApp.UserName,
                                     Email = accountApp.Email,
                                     Name = accountApp.Name,
@@ -423,6 +424,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                 // Map to DTOs for response
                 var accountInfoList = allAccounts.Select(user => new NewUserDto
                 {
+                    UserID = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
                     Name = user.Name,

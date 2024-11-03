@@ -8,6 +8,7 @@ namespace Service.RequestAndResponse.Response.Account
 {
     public class GetAllUserResponse
     {
+        public string AccountID { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }

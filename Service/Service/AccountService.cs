@@ -39,9 +39,17 @@ namespace Service.Service
             }
         }
 
-        public Task<BaseResponse<GetTotalAccounts>> GetTotalAccounts()
+        public async Task<BaseResponse<GetTotalAccounts>> GetTotalAccounts()
         {
-            throw new NotImplementedException();
+            var total = await _accountAppRepository.GetTotalAccount();
+            var response = new GetTotalAccounts
+            {
+                totalAccount = total.totalAccount,
+                staffsAccount = total.staffsAccount,
+                customersAccount = total.customersAccount,
+                managersAccount = total.managersAccount
+            };
+            return new BaseResponse<GetTotalAccounts>("Get total account success", StatusCodeEnum.OK_200, response);
         }
 
         public async Task<BaseResponse<GetUserByStringIdResponse>> GetUserByStringIdFromBase(string id)
