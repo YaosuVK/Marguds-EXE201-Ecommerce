@@ -97,6 +97,13 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                     Status = true
                 };
 
+                var existUser = await _userManager.FindByEmailAsync(registerDto.Email);
+                if (existUser != null)
+                {
+                    return BadRequest("This email has already registered, please try another email!!!");
+                }
+                else
+                {
                 var createdUser = await _userManager.CreateAsync(accountApp, registerDto.Password);
 
                 if (createdUser.Succeeded)
@@ -120,7 +127,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                                 Image = accountApp.Image,
                                 Roles = userRoles.ToList(),
                                 Token = token.AccessToken,
-                                RefreshToken = token.RefreshToken                               
+                                RefreshToken = token.RefreshToken
                             }
                         );
                     }
@@ -134,6 +141,7 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                 {
                     return StatusCode(500, createdUser.Errors);
                 }
+            }
             }
             catch (Exception e)
             {
