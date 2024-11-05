@@ -1,5 +1,7 @@
 ﻿using BussinessObject.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Update;
 using Service.IService;
 using Service.RequestAndResponse.Request.Shipping;
 using Service.RequestAndResponse.Request.VnPayModel;
@@ -17,14 +19,17 @@ namespace Marguds_EXE201_Ecommerce.Controllers
         private readonly IVnPayService _vnPayService;
         private readonly IConfiguration _configuration;
         private readonly ISubcriptionPlanService _subPlanService;
+        private readonly UserManager<Account> _userManager;
 
-        public SubcriptionController(ISubcriptionService subService, IVnPayService vnPayService, ISubcriptionPlanService subPlanService,
-            IConfiguration configuration)
+        public SubcriptionController(ISubcriptionService subService, IVnPayService vnPayService, ISubcriptionPlanService subPlanService, 
+            IConfiguration configuration, UserManager<Account> userManager)
         {
             _subService = subService;
             _vnPayService = vnPayService;
             _configuration = configuration;
             _subPlanService = subPlanService;
+            _userManager = userManager;
+            
         }
 
         [HttpGet("get-all-Subcriptions")]
@@ -96,7 +101,13 @@ namespace Marguds_EXE201_Ecommerce.Controllers
                 Message = model.Vnp_ResponseCode
             };
             var orderId = Convert.ToInt32(model.Vnp_OrderInfo);
-            await _subService.CreateSubcription(orderId, transaction);
+            var subcription = await _subService.CreateSubcription(orderId, transaction);
+            var account = await _userManager.FindByIdAsync(subcription.AccountID);
+            if (account != null)
+            {
+                account.SubcriptionID = subcription.SubcriptionID;
+                await _userManager.UpdateAsync(account);
+            }
             return Redirect($"{_configuration["VnPay:UrlReturnPayment"]}/{orderId}");
         }
     }
