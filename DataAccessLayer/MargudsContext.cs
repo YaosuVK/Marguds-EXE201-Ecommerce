@@ -46,7 +46,7 @@ namespace DataAccessLayer
                 .HasOne(e => e.Account)
                 .WithOne(e => e.Subscription)
                 .HasForeignKey<Account>(e => e.SubcriptionID);
-
+                
             modelBuilder.Entity<VoucherUsage>()
                 .HasOne(e => e.UserVoucher)
                 .WithOne(e => e.VoucherUsage)

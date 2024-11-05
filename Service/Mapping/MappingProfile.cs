@@ -61,7 +61,9 @@ namespace Service.Mapping
             CreateMap<ImageProduct, GetAllImageProductsResponse>();
             CreateMap<UpdateProductRequest, Product>().ReverseMap();
             CreateMap<Product, UpdateProductRequest>();
-            CreateMap<AddProductRequest, Product>().ReverseMap();
+            CreateMap<AddProductRequest, Product>()
+                .ForMember(dest => dest.ImageProducts, opt => opt.MapFrom(src => src.ImageProducts))
+                .ReverseMap();
             CreateMap<Product, AddProductRequest>();
             CreateMap<Product, GetFilterProductResponse>();
             CreateMap<Product, GetFilterProductForManager>();
