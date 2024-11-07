@@ -24,13 +24,14 @@ public class CheckoutService : ICheckoutService
         _orderRepository = orderRepository;
         _productRepository = productRepository;
     }
-    public async Task<Order> Checkout(string accountId, ShippingRequest shippingRequest, PaymentMethod paymentMethod)
+    public async Task<Order> Checkout(string accountId, ShippingRequest shippingRequest, PaymentMethod paymentMethod, double totals, int voucherTypes = -1)
     {
         var cart = await _cartRepository.GetCart(accountId);
         if (cart == null || cart.CartItem.Count < 1)
         {
             throw new Exception("Cart is empty");
         }
+
         foreach (var item in cart.CartItem)
         {
             var product = await _productRepository.GetByIdAsync(item.ProductID);
@@ -52,6 +53,7 @@ public class CheckoutService : ICheckoutService
                 TotalAmount = _productRepository.GetByIdAsync(x.ProductID).Result.PurchasePrice * x.Quantity
             }).ToList(),
             Status = OrderStatus.ToPay,
+            Total = totals,
             ShippingInfo = new ShippingInfo
             {
                 DetailAddress = shippingRequest.DetailAddress,
@@ -64,23 +66,51 @@ public class CheckoutService : ICheckoutService
             },
             PaymentMethod = paymentMethod == PaymentMethod.Cod ? PaymentMethod.Cod : PaymentMethod.VnPay
         };
-        double total = 0;
+
+        // Apply voucher logic if voucherTypes is provided
+        if (voucherTypes != -1)
+        {
+            if (Enum.IsDefined(typeof(VoucherTypes), voucherTypes))
+            {
+                VoucherTypes voucherTypesEnum = (VoucherTypes)voucherTypes;
+
+                switch (voucherTypesEnum)
+                {
+                    // create VoucherUsage Entity 
+                    case VoucherTypes.Gift:
+                        // Apply gift logic here if needed, e.g., gift mapping.
+                        break;
+                    case VoucherTypes.DiscountOrder:
+                        // Apply discount logic here if needed, e.g., reducing the total amount.
+                        break;
+                    case VoucherTypes.FreeShip:
+                        order.ShippingInfo.ShippingCost = 0; // Free shipping
+                        break;
+                    default:
+                        throw new Exception("Invalid voucher type");
+                }
+            }
+            else
+            {
+                throw new Exception("VoucherType conversion failed");
+            }
+        }
+
         foreach (var item in order.OrderDetails)
         {
             var product = await _productRepository.GetByIdAsync(item.ProductID);
             if (product != null)
             {
-                total += item.Quantity * product.PurchasePrice;
                 product.InventoryQuantity -= item.Quantity; // Adjust inventory
                 await _productRepository.UpdateAsync(product); // Update product in repository
             }
         }
 
-        order.Total = total + CalculateShippingFee(shippingRequest.ProvinceCode);
         await _orderRepository.AddOrderAsync(order);
         await _cartRepository.ClearCart(accountId);
         return order;
     }
+
 
     private async void ValidateCart(Cart? cart)
     {

@@ -183,6 +183,47 @@ namespace Service.Service
                 );
             }
         }
+        // Change UserVoucher Status To False
+        public async Task<bool> ChangeUserVoucherStatusToFalse(int id)
+        {
+            try
+            {
+                var userVoucher = await _userVoucherRepository.GetByIdAsync(id);
+                if (userVoucher == null)
+                {
+                    return false;
+                }
+
+                userVoucher.Status = false;
+                await _userVoucherRepository.UpdateAsync(userVoucher);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // Change UserVoucher Status To True
+        public async Task<bool> ChangeUserVoucherStatusToTrue(int id)
+        {
+            try
+            {
+                var userVoucher = await _userVoucherRepository.GetByIdAsync(id);
+                if (userVoucher == null)
+                {
+                    return false;
+                }
+
+                userVoucher.Status = true;
+                await _userVoucherRepository.UpdateAsync(userVoucher);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         //////////////////////////////////////////
         private static Random random = new Random();
@@ -200,6 +241,7 @@ namespace Service.Service
 
             return voucherCode.ToString();
         }
+
         /////////////////////////////////////////
     }
 }

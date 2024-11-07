@@ -17,6 +17,8 @@ namespace Service.IService
         Task<BaseResponse<string>> UpdateUserVoucherAsync(UpdateUserVoucherRequest request);
         Task<BaseResponse<string>> DeleteUserVoucherAsync(int id);
         Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId);
+        Task<bool> ChangeUserVoucherStatusToFalse(int id);
+        Task<bool> ChangeUserVoucherStatusToTrue(int id);
 
     }
 }

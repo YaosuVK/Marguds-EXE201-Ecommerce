@@ -120,7 +120,10 @@ namespace Service.Mapping
                 .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.VoucherTemplate.DiscountPercentage)); 
             CreateMap<CreateUserVoucherRequest, UserVoucher>(); // For creating a user voucher
             CreateMap<UpdateUserVoucherRequest, UserVoucher>(); // For updating a user voucher
-            CreateMap<UserVoucher, GetUserVoucherByIdResponse>(); // For retrieving a specific user voucher by ID
+            CreateMap<UserVoucher, GetUserVoucherByIdResponse>() // For retrieving a specific user voucher by ID
+                .ForMember(dest => dest.VoucherTypes, opt => opt.MapFrom(src => src.VoucherTemplate.VoucherTypes))
+                .ForMember(dest => dest.IsMembership, opt => opt.MapFrom(src => src.VoucherTemplate.IsMembership))
+                .ForMember(dest => dest.DiscountPercentage, opt => opt.MapFrom(src => src.VoucherTemplate.DiscountPercentage));
 
             CreateMap<VoucherUsage, GetAllVoucherUsageResponse>(); // For retrieving all voucher usage records
             CreateMap<CreateVoucherUsageRequest, VoucherUsage>(); // For creating a voucher usage record
