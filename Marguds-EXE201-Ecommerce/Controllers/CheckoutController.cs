@@ -9,6 +9,8 @@ using System.Globalization;
 using Service.RequestAndResponse.Enums;
 using MailKit.Search;
 using Service.RequestAndResponse.Request.VoucherUsage;
+using Service.RequestAndResponse.VNPay;
+using Service.Service;
 
 namespace Marguds_EXE201_Ecommerce.Controllers;
 
@@ -22,9 +24,11 @@ public class CheckoutController : ControllerBase
     private readonly ICheckoutService _checkoutService;
     private readonly IVnPayService _vnPayService;
     private readonly IConfiguration _configuration;
+    private readonly IOrderService _orderService; 
 
     public CheckoutController(ICheckoutService checkoutService, IVnPayService vnPayService,
-        IConfiguration configuration, IVoucherTemplateService voucherTemplateService, IUserVoucherService userVoucherService, IVoucherUsageService voucherUsageService)
+        IConfiguration configuration, IVoucherTemplateService voucherTemplateService, IUserVoucherService userVoucherService,
+        IVoucherUsageService voucherUsageService, IOrderService orderService) 
     {
         _checkoutService = checkoutService;
         _vnPayService = vnPayService;
@@ -32,8 +36,8 @@ public class CheckoutController : ControllerBase
         _voucherTemplateService = voucherTemplateService;
         _userVoucherService = userVoucherService;
         _voucherUsageService = voucherUsageService;
+        _orderService = orderService; 
     }
-
     /*[Authorize(Roles = "Customer")]*/
     [HttpPost("createOrder")]
     [ProducesResponseType(StatusCodes.Status302Found)]
@@ -207,27 +211,65 @@ public class CheckoutController : ControllerBase
     [HttpGet("vnpay-return")]
     public async Task<IActionResult> HandleVnPayReturn([FromQuery] VnPayReturnModel model)
     {
-        if (model.Vnp_TransactionStatus != "00") return BadRequest();
-        var transaction = new Transaction
+        // Validate signature
+        var vnpay = new VnPayLibrary();
+        foreach (var prop in model.GetType().GetProperties())
         {
-            Amount = model.Vnp_Amount,
-            BankCode = model.Vnp_BankCode,
-            BankTranNo = model.Vnp_BankTranNo,
-            TransactionType = model.Vnp_CardType,
-            OrderInfo = model.Vnp_OrderInfo,
-            PayDate = DateTime.ParseExact((string)model.Vnp_PayDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture),
-            ResponseCode = model.Vnp_ResponseCode,
-            TmnCode = model.Vnp_TmnCode,
-            TransactionNo = model.Vnp_TransactionNo,
-            TransactionStatus = model.Vnp_TransactionStatus,
-            TxnRef = model.Vnp_TxnRef,
-            SecureHash = model.Vnp_SecureHash,
-            ResponseId = model.Vnp_TransactionNo,
-            Message = model.Vnp_ResponseCode
-        };
-        var orderId = Convert.ToInt32(model.Vnp_OrderInfo);
-        await _checkoutService.CreateOrder(orderId, transaction);
-        return Redirect($"{_configuration["VnPay:UrlReturnPayment"]}/{orderId}");
+            if (prop.Name.StartsWith("Vnp_") && prop.GetValue(model) != null)
+            {
+                vnpay.AddResponseData(prop.Name.ToLower(), prop.GetValue(model).ToString());
+            }
+        }
+
+        bool isSignatureValid = vnpay.ValidateSignature(model.Vnp_SecureHash, _configuration["VnPay:HashSecret"]);
+        if (!isSignatureValid)
+        {
+            return BadRequest("Invalid signature.");
+        }
+
+        // Check transaction status
+        switch (model.Vnp_TransactionStatus)
+        {
+            case "00":
+                // Payment success
+                var transaction = new Transaction
+                {
+                    Amount = model.Vnp_Amount,
+                    BankCode = model.Vnp_BankCode,
+                    BankTranNo = model.Vnp_BankTranNo,
+                    TransactionType = model.Vnp_CardType,
+                    OrderInfo = model.Vnp_OrderInfo,
+                    PayDate = DateTime.ParseExact(model.Vnp_PayDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture),
+                    ResponseCode = model.Vnp_ResponseCode,
+                    TmnCode = model.Vnp_TmnCode,
+                    TransactionNo = model.Vnp_TransactionNo,
+                    TransactionStatus = model.Vnp_TransactionStatus,
+                    TxnRef = model.Vnp_TxnRef,
+                    SecureHash = model.Vnp_SecureHash,
+                    ResponseId = model.Vnp_TransactionNo,
+                    Message = model.Vnp_ResponseCode
+                };
+
+                // Verify if order exists
+                var orderId = Convert.ToInt32(model.Vnp_OrderInfo);
+                var existingOrderResponse = await _orderService.GetOrderByIdAsync(orderId);
+                if (existingOrderResponse == null || existingOrderResponse.Data == null)
+                {
+                    return BadRequest("Order not found.");
+                }
+
+                // Update the order status
+                await _checkoutService.CreateOrder(orderId, transaction);
+                return Redirect($"{_configuration["VnPay:UrlReturnPayment"]}/{orderId}");
+
+            case "24":
+                // Payment cancelled by user
+                return BadRequest("Payment was cancelled by the user.");
+
+            default:
+                // Payment failed
+                return BadRequest("Payment failed. Please try again.");
+        }
     }
 
 
