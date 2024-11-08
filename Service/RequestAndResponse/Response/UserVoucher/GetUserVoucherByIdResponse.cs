@@ -20,6 +20,9 @@ namespace Service.RequestAndResponse.Response.UserVoucher
         public bool Status { get; set; }
 
         public int? VoucherTemplateID { get; set; }
+        public VoucherTypes VoucherTypes { get; set; }
+        public bool IsMembership { get; set; }
+        public double DiscountPercentage { get; set; }
 
         public string? AccountID { get; set; }
 

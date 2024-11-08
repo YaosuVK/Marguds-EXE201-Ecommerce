@@ -33,12 +33,12 @@ namespace Marguds_EXE201_Ecommerce.Controllers
             return await _userVoucherService.GetUserVoucherByIdAsync(id);
         }
 
-        //// POST: api/uservoucher
-        //[HttpPost]
-        //public async Task<BaseResponse<string>> CreateUserVoucherAsync([FromBody] CreateUserVoucherRequest request)
-        //{
-        //    return await _userVoucherService.AddUserVoucherAsync(request);
-        //}
+        // POST: api/uservoucher
+        [HttpPost]
+        public async Task<BaseResponse<string>> CreateUserVoucherAsync([FromBody] CreateUserVoucherRequest request)
+        {
+            return await _userVoucherService.AddUserVoucherAsync(request);
+        }
 
         // PUT: api/uservoucher
         [HttpPut]
@@ -52,6 +52,12 @@ namespace Marguds_EXE201_Ecommerce.Controllers
         public async Task<BaseResponse<string>> DeleteUserVoucherAsync(int id)
         {
             return await _userVoucherService.DeleteUserVoucherAsync(id);
+        }
+        // GET: api/uservoucher/unused/{accountId}
+        [HttpGet("unused/{accountId}")]
+        public async Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId)
+        {
+            return await _userVoucherService.GetAllUserUnusedVouchersAsync(accountId);
         }
     }
 }

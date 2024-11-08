@@ -10,7 +10,7 @@ namespace Service.IService;
 
 public interface ICheckoutService
 {
-    public Task<Order> Checkout(string accountId, ShippingRequest shippingRequest, PaymentMethod paymentMethod);
+    public Task<Order> Checkout(string accountId, ShippingRequest shippingRequest, PaymentMethod paymentMethod, double totals, int voucherTypes = -1);
     public Task<bool> ValidateCart(string accountId);
     public Task<Order> CreateOrder(int orderId, Transaction transaction);
     public Task<double> GetAmount(string accountId);

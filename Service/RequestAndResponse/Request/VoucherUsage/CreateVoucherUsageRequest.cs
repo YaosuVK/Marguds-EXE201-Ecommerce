@@ -8,8 +8,6 @@ namespace Service.RequestAndResponse.Request.VoucherUsage
 {
     public class CreateVoucherUsageRequest
     {
-        public int VoucherUsageID { get; set; }
-
         public string? AccountID { get; set; }
 
         public int? UserVoucherID { get; set; }

@@ -8,6 +8,7 @@ using Service.RequestAndResponse.Request.UserVoucher;
 using Service.RequestAndResponse.Response.UserVoucher;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Service.Service
@@ -15,11 +16,13 @@ namespace Service.Service
     public class UserVoucherService : IUserVoucherService
     {
         private readonly IUserVoucherRepository _userVoucherRepository;
+        private readonly IVoucherUsageService _voucherUsageService;
         private readonly IMapper _mapper;
 
-        public UserVoucherService(IUserVoucherRepository userVoucherRepository, IMapper mapper)
+        public UserVoucherService(IUserVoucherRepository userVoucherRepository, IVoucherUsageService voucherUsageService, IMapper mapper)
         {
             _userVoucherRepository = userVoucherRepository;
+            _voucherUsageService = voucherUsageService;
             _mapper = mapper;
         }
 
@@ -29,6 +32,7 @@ namespace Service.Service
             try
             {
                 var userVoucher = _mapper.Map<UserVoucher>(request);
+                userVoucher.VoucherCode = GenerateVoucherCode();
                 await _userVoucherRepository.AddAsync(userVoucher);
 
                 return new BaseResponse<string>(
@@ -159,5 +163,122 @@ namespace Service.Service
                 );
             }
         }
+
+        public async Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId)
+        {
+            try
+            {
+                var userVouchers = await _userVoucherRepository.GetAllUserUnusedVouchersAsync(accountId);
+                var response = _mapper.Map<IEnumerable<GetAllUserVoucherResponse>>(userVouchers);
+
+                return new BaseResponse<IEnumerable<GetAllUserVoucherResponse>>(
+                    "Unused user vouchers retrieved successfully.",
+                    StatusCodeEnum.OK_200,
+                    response
+                );
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<IEnumerable<GetAllUserVoucherResponse>>(
+                    $"Error: {ex.Message}",
+                    StatusCodeEnum.InternalServerError_500,
+                    null
+                );
+            }
+        }
+
+        // Change UserVoucher Status To False
+        public async Task<bool> ChangeUserVoucherStatusToFalse(int id)
+        {
+            try
+            {
+                var userVoucher = await _userVoucherRepository.GetByIdAsync(id);
+                if (userVoucher == null)
+                {
+                    return false;
+                }
+
+                userVoucher.Status = false;
+                await _userVoucherRepository.UpdateAsync(userVoucher);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // Change UserVoucher Status To True
+        public async Task<bool> ChangeUserVoucherStatusToTrue(int id)
+        {
+            try
+            {
+                var userVoucher = await _userVoucherRepository.GetByIdAsync(id);
+                if (userVoucher == null)
+                {
+                    return false;
+                }
+
+                userVoucher.Status = true;
+                await _userVoucherRepository.UpdateAsync(userVoucher);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // Renew Used User Voucher
+        public async Task<bool> RenewUsedUserVoucher(int id)
+        {
+            try
+            {
+                var userVoucher = await _userVoucherRepository.GetByIdAsync(id);
+                if (userVoucher == null)
+                {
+                    return false;
+                }
+
+                // Delete related VoucherUsage if exists
+                if (userVoucher.VoucherUsage != null)
+                {
+                    var deleteResponse = await _voucherUsageService.DeleteVoucherUsageAsync(userVoucher.VoucherUsage.VoucherUsageID);
+                    if (deleteResponse.StatusCode != StatusCodeEnum.OK_200)
+                    {
+                        return false;
+                    }
+                }
+
+                // Change UserVoucher status to true
+                userVoucher.Status = true;
+                await _userVoucherRepository.UpdateAsync(userVoucher);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        //////////////////////////////////////////
+        private static Random random = new Random();
+
+        public string GenerateVoucherCode(int length = 8)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            StringBuilder voucherCode = new StringBuilder("MG");
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = random.Next(chars.Length);
+                voucherCode.Append(chars[index]);
+            }
+
+            return voucherCode.ToString();
+        }
+
+        /////////////////////////////////////////
     }
 }

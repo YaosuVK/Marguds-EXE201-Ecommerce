@@ -10,5 +10,6 @@ namespace Repository.IRepository
 {
     public interface IUserVoucherRepository : IBaseRepository<UserVoucher>
     {
+        Task<IEnumerable<UserVoucher>> GetAllUserUnusedVouchersAsync(string accountId);
     }
 }

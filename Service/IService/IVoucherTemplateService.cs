@@ -16,5 +16,6 @@ namespace Service.IService
         Task<BaseResponse<GetVoucherTemplateByIdResponse?>> GetVoucherTemplateByIdAsync(int id);
         Task<BaseResponse<string>> UpdateVoucherTemplateAsync(UpdateVoucherTemplateRequest request);
         Task<BaseResponse<string>> DeleteVoucherTemplateAsync(int id);
+        Task<BaseResponse<string>> CheckAllActiveVoucherTemplatesAndGenerateAllSastifyUserVoucher(string accountId, double totals);
     }
 }
