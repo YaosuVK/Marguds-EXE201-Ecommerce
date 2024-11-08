@@ -33,6 +33,7 @@ namespace Repository
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddScoped<IGiftRepository, GiftRepository>();
             services.AddScoped<ISubcriptionPlanRepository, SubcriptionPlanRepository>();
+            services.AddScoped<ISubcriptionRepository, SubcriptionRepository>();
             services.AddScoped<IVoucherTemplateRepository, VoucherTemplateRepository>();
             services.AddScoped<IUserVoucherRepository, UserVoucherRepository>();
             services.AddScoped<IVoucherUsageRepository, VoucherUsageRepository>();
@@ -52,6 +53,7 @@ namespace Repository
             services.AddScoped<ReportDAO>();
             services.AddScoped<GiftDAO>();
             services.AddScoped<SubcriptionPlanDAO>();
+            services.AddScoped<SubcriptionDAO>();
 
             //
 
