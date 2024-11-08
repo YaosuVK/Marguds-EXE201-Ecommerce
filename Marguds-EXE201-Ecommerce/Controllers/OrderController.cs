@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.IService;
 using Service.RequestAndResponse.BaseResponse;
+using Service.RequestAndResponse.Enums;
 using Service.RequestAndResponse.Response.Order;
 
 namespace Marguds_EXE201_Ecommerce.Controllers;
@@ -12,10 +13,14 @@ namespace Marguds_EXE201_Ecommerce.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly IOrderService _orderService;
+    private readonly IUserVoucherService _userVoucherService;
+    private readonly IVoucherTemplateService _voucherTemplateService;
 
-    public OrderController(IOrderService orderService)
+    public OrderController(IOrderService orderService, IUserVoucherService userVoucherService, IVoucherTemplateService voucherTemplateService)
     {
         _orderService = orderService;
+        _userVoucherService = userVoucherService;
+        _voucherTemplateService = voucherTemplateService;
     }
 
     /*[Authorize(Roles = "Customer")]*/
@@ -40,6 +45,66 @@ public class OrderController : ControllerBase
     }
 
     /*[Authorize(Roles = "Staff, Customer")]*/
+    [HttpPut("cancel-order")]
+    public async Task<BaseResponse<OrderResponse>> CancelOrder(int orderId)
+    {
+        var orderResponse = await _orderService.ChangeOrderStatus(orderId, OrderStatus.Cancelled);
+        if (orderResponse.StatusCode != StatusCodeEnum.OK_200)
+        {
+            return orderResponse;
+        }
+
+        var renewResult = await _userVoucherService.RenewUsedUserVoucher(orderId);
+        if (!renewResult)
+        {
+            return new BaseResponse<OrderResponse>(
+                "Failed to renew user voucher.",
+                StatusCodeEnum.InternalServerError_500,
+                null
+            );
+        }
+
+        return orderResponse;
+    }
+
+    /*[Authorize(Roles = "Staff, Customer")]*/
+    [HttpPut("complete-order")]
+    public async Task<BaseResponse<OrderResponse>> CompleteOrder(int orderId, OrderStatus status)
+    {
+        var orderResponse = await _orderService.ChangeOrderStatus(orderId, status);
+        if (orderResponse.StatusCode != StatusCodeEnum.OK_200)
+        {
+            return orderResponse;
+        }
+
+        var orderDataResponse = await _orderService.GetOrderByIdAsync(orderId);
+        if (orderDataResponse.StatusCode != StatusCodeEnum.OK_200 || orderDataResponse.Data == null)
+        {
+            return new BaseResponse<OrderResponse>(
+                "Failed to retrieve order data.",
+                StatusCodeEnum.NotFound_404,
+                null
+            );
+        }
+
+        var orderData = orderDataResponse.Data;
+        var accountId = orderData.AccountID;
+        var totals = orderData.Total;
+
+        var voucherResult = await _voucherTemplateService.CheckAllActiveVoucherTemplatesAndGenerateAllSastifyUserVoucher(accountId, totals);
+        if (voucherResult.StatusCode != StatusCodeEnum.OK_200)
+        {
+            return new BaseResponse<OrderResponse>(
+                "Failed to generate vouchers for user.",
+                StatusCodeEnum.InternalServerError_500,
+                null
+            );
+        }
+
+        return orderResponse;
+    }
+
+    /*[Authorize(Roles = "Staff, Customer")]*/
     [HttpGet("get-order-by-id/{orderId}")]
     public async Task<BaseResponse<OrderResponse>> GetOrderByIdAsync(int orderId)
     {
@@ -61,26 +126,24 @@ public class OrderController : ControllerBase
         return await _orderService.GetStaticOrders();
     }
 
-    /*[Authorize(Roles = "Admin")]*/
+    /*[Authorize(Roles = "Admin"]*/
     [HttpGet("adminDashBoard/GetTopProductsSoldInMonth")]
     public async Task<BaseResponse<GetTopProductsSoldInMonth>> GetTopProductsSoldInMonthAsync()
     {
         return await _orderService.GetTopProductsSoldInMonthAsync();
     }
 
-    /*[Authorize(Roles = "Admin")]*/
+    /*[Authorize(Roles = "Admin"]*/
     [HttpGet("adminDashBoard/GetStoreRevenueByMonth")]
     public async Task<BaseResponse<GetStoreRevenueByMonth>> GetStoreRevenueByMonthAsync()
     {
         return await _orderService.GetStoreRevenueByMonthAsync();
     }
 
-    /*[Authorize(Roles = "Admin")]*/
+    /*[Authorize(Roles = "Admin"]*/
     [HttpGet("adminDashBoard/GetTotalOrdersTotalOrdersAmount")]
-    public async Task<BaseResponse<List<GetTotalOrdersTotalOrdersAmount>>> GetTotalOrdersTotalOrdersAmountAsync
-        (DateTime startDate, DateTime endDate, string? timeSpanType)
+    public async Task<BaseResponse<List<GetTotalOrdersTotalOrdersAmount>>> GetTotalOrdersTotalOrdersAmountAsync(DateTime startDate, DateTime endDate, string? timeSpanType)
     {
         return await _orderService.GetTotalOrdersTotalOrdersAmountAsync(startDate, endDate, timeSpanType);
     }
 }
-

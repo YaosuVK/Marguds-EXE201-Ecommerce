@@ -5,6 +5,7 @@ using Repository.IRepository;
 using Service.IService;
 using Service.RequestAndResponse.BaseResponse;
 using Service.RequestAndResponse.Enums;
+using Service.RequestAndResponse.Request.UserVoucher;
 using Service.RequestAndResponse.Request.VoucherTemplate;
 using Service.RequestAndResponse.Response.Order;
 using Service.RequestAndResponse.Response.VoucherTemplate;
@@ -16,15 +17,15 @@ namespace Service.Service
 {
     public class VoucherTemplateService : IVoucherTemplateService
     {
+        private readonly IUserVoucherService _userVoucherService;
         private readonly IVoucherTemplateRepository _voucherTemplateRepository;
         private readonly IMapper _mapper;
-
-        public VoucherTemplateService(IVoucherTemplateRepository voucherTemplateRepository, IMapper mapper)
+        public VoucherTemplateService(IVoucherTemplateRepository voucherTemplateRepository, IUserVoucherService userVoucherService, IMapper mapper)
         {
             _voucherTemplateRepository = voucherTemplateRepository;
+            _userVoucherService = userVoucherService;
             _mapper = mapper;
         }
-
         // Add Voucher Template
         public async Task<BaseResponse<string>> AddVoucherTemplateAsync(CreateVoucherTemplateRequest request)
         {
@@ -150,6 +151,62 @@ namespace Service.Service
                     "Voucher template deleted successfully.",
                     StatusCodeEnum.OK_200,
                     "Deleted"
+                );
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<string>(
+                    $"Error: {ex.Message}",
+                    StatusCodeEnum.InternalServerError_500,
+                    null
+                );
+            }
+        }
+        public async Task<BaseResponse<string>> CheckAllActiveVoucherTemplatesAndGenerateAllSastifyUserVoucher(string accountId, double totals)
+        {
+            try
+            {
+                // Get all voucher templates that have Status = true and MilestoneAmount <= totals
+                var allVoucherTemplatesResponse = await GetAllVoucherTemplatesAsync();
+                if (allVoucherTemplatesResponse.StatusCode != StatusCodeEnum.OK_200 || allVoucherTemplatesResponse.Data == null)
+                {
+                    return new BaseResponse<string>(
+                        "Failed to retrieve voucher templates.",
+                        StatusCodeEnum.InternalServerError_500,
+                        null
+                    );
+                }
+
+                var satisfiedVoucherTemplates = allVoucherTemplatesResponse.Data
+                    .Where(voucher => voucher.Status && voucher.MilestoneAmount <= totals);
+
+                // Generate vouchers for each satisfied template
+                foreach (var voucherTemplate in satisfiedVoucherTemplates)
+                {
+                    var createUserVoucherRequest = new CreateUserVoucherRequest
+                    {
+                        AccountID = accountId,
+                        VoucherTemplateID = voucherTemplate.VoucherTemplateID,
+                        StartedAt = DateTime.Now,
+                        ExpiredAt = voucherTemplate.ExpiredAt,
+                        Status = true
+                    };
+
+                    var addUserVoucherResponse = await _userVoucherService.AddUserVoucherAsync(createUserVoucherRequest);
+                    if (addUserVoucherResponse.StatusCode != StatusCodeEnum.OK_200)
+                    {
+                        return new BaseResponse<string>(
+                            $"Failed to add user voucher for template ID {voucherTemplate.VoucherTemplateID}.",
+                            StatusCodeEnum.InternalServerError_500,
+                            null
+                        );
+                    }
+                }
+
+                return new BaseResponse<string>(
+                    "Vouchers generated successfully.",
+                    StatusCodeEnum.OK_200,
+                    "Success"
                 );
             }
             catch (Exception ex)

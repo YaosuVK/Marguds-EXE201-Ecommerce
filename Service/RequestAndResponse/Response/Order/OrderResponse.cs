@@ -17,6 +17,9 @@ namespace Service.RequestAndResponse.Response.Order
         public OrderStatus Status { get; set; }
         public double Total { get; set; }
         public int ReportID { get; set; }
+        public string AccountID { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+
         //
         public ICollection<OrderDetailResponse> OrderDetails { get; set; }
         public TransactionResponse? Transaction { get; set; }

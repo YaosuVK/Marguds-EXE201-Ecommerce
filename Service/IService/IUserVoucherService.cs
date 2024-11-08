@@ -19,6 +19,7 @@ namespace Service.IService
         Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId);
         Task<bool> ChangeUserVoucherStatusToFalse(int id);
         Task<bool> ChangeUserVoucherStatusToTrue(int id);
+        Task<bool> RenewUsedUserVoucher(int id);
 
     }
 }

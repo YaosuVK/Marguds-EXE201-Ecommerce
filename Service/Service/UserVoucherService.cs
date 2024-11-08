@@ -16,11 +16,13 @@ namespace Service.Service
     public class UserVoucherService : IUserVoucherService
     {
         private readonly IUserVoucherRepository _userVoucherRepository;
+        private readonly IVoucherUsageService _voucherUsageService;
         private readonly IMapper _mapper;
 
-        public UserVoucherService(IUserVoucherRepository userVoucherRepository, IMapper mapper)
+        public UserVoucherService(IUserVoucherRepository userVoucherRepository, IVoucherUsageService voucherUsageService, IMapper mapper)
         {
             _userVoucherRepository = userVoucherRepository;
+            _voucherUsageService = voucherUsageService;
             _mapper = mapper;
         }
 
@@ -161,6 +163,7 @@ namespace Service.Service
                 );
             }
         }
+
         public async Task<BaseResponse<IEnumerable<GetAllUserVoucherResponse>>> GetAllUserUnusedVouchersAsync(string accountId)
         {
             try
@@ -183,6 +186,7 @@ namespace Service.Service
                 );
             }
         }
+
         // Change UserVoucher Status To False
         public async Task<bool> ChangeUserVoucherStatusToFalse(int id)
         {
@@ -217,6 +221,39 @@ namespace Service.Service
 
                 userVoucher.Status = true;
                 await _userVoucherRepository.UpdateAsync(userVoucher);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // Renew Used User Voucher
+        public async Task<bool> RenewUsedUserVoucher(int id)
+        {
+            try
+            {
+                var userVoucher = await _userVoucherRepository.GetByIdAsync(id);
+                if (userVoucher == null)
+                {
+                    return false;
+                }
+
+                // Delete related VoucherUsage if exists
+                if (userVoucher.VoucherUsage != null)
+                {
+                    var deleteResponse = await _voucherUsageService.DeleteVoucherUsageAsync(userVoucher.VoucherUsage.VoucherUsageID);
+                    if (deleteResponse.StatusCode != StatusCodeEnum.OK_200)
+                    {
+                        return false;
+                    }
+                }
+
+                // Change UserVoucher status to true
+                userVoucher.Status = true;
+                await _userVoucherRepository.UpdateAsync(userVoucher);
+
                 return true;
             }
             catch (Exception)
