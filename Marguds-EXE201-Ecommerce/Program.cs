@@ -29,13 +29,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 //
 // Connect Database
 builder.Services.AddDbContext<MargudsContext>(options =>
-{
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DbConnection"),
-        sqlOptions => sqlOptions.MigrationsAssembly("DataAccessLayer")
-    );
-    options.UseLazyLoadingProxies(); // Enable lazy loading proxies
-});
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"),
+        sqlOptions => sqlOptions.MigrationsAssembly("DataAccessLayer")));
 
 
 // Configure Services

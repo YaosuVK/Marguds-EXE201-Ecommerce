@@ -166,23 +166,6 @@ public class CheckoutController : ControllerBase
         {
             var order = await _checkoutService.Checkout(accountId, shippingRequest, PaymentMethod.VnPay, totals);
             var orderId = order.OrderID;
-            var result = await _userVoucherService.ChangeUserVoucherStatusToFalse(userVoucherId);
-            if (result == false)
-            {
-                return "error: fail to update userVoucher Status";
-            }
-            var voucherUsage = new CreateVoucherUsageRequest
-            {
-                AccountID = accountId,
-                UserVoucherID = userVoucherId,
-                OrderID = orderId,
-                IsUsed = true,
-                UsedAt = DateTime.UtcNow,
-            };
-            var createVoucherUsageResult = await _voucherUsageService.AddVoucherUsageAsync(voucherUsage);
-            if (createVoucherUsageResult.StatusCode != StatusCodeEnum.OK_200)
-            {
-                return "error: fail to create4 voucherUsage Entity";
             }// create payment vnpay
             var vnPayModel = new VnPayRequestModel
             {
