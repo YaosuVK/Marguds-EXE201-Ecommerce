@@ -166,7 +166,7 @@ public class CheckoutController : ControllerBase
         {
             var order = await _checkoutService.Checkout(accountId, shippingRequest, PaymentMethod.VnPay, totals);
             var orderId = order.OrderID;
-            }// create payment vnpay
+            // create payment vnpay
             var vnPayModel = new VnPayRequestModel
             {
                 Amount = recalculatedTotals,

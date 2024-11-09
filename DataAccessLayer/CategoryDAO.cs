@@ -21,7 +21,7 @@ namespace DataAccessLayer
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _context.Categories.Include(c => c.Products)
+            return await _context.Categories.Include(c => c.Products).ThenInclude(c => c.ImageProducts)
             .ToListAsync();
         }
         public async Task<Category> GetByIdAsync(int id)
@@ -30,7 +30,7 @@ namespace DataAccessLayer
             {
                 throw new ArgumentNullException($"id {id} not found");
             }
-            var entity = await _context.Set<Category>().Include(c => c.Products)
+            var entity = await _context.Set<Category>().Include(c => c.Products).ThenInclude(c => c.ImageProducts)
                .SingleOrDefaultAsync(c => c.CategoryID == id);
             if (entity == null)
             {
