@@ -50,8 +50,12 @@ namespace Service.Mapping
             //
             CreateMap<ImageBlog, GetAllImageBlogResponse>();
             CreateMap<Blog, BlogResponse>();
-            CreateMap<BlogRequest, Blog>().ReverseMap();
-            CreateMap<UpdateBlogRequest, Blog>().ReverseMap();
+            CreateMap<BlogRequest, Blog>().ReverseMap()
+            .ForMember(dest => dest.ImageBlogs, opt => opt.MapFrom(src => src.ImageBlogs))
+            .ReverseMap();
+            CreateMap<UpdateBlogRequest, Blog>().ReverseMap()
+            .ForMember(dest => dest.ImageBlogs, opt => opt.MapFrom(src => src.ImageBlogs))
+            .ReverseMap();
 
             //
             CreateMap<Product, GetAllProductsResponse>();
