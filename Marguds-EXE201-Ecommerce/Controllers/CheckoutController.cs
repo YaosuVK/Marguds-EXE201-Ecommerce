@@ -166,7 +166,7 @@ public class CheckoutController : ControllerBase
         {
             var order = await _checkoutService.Checkout(accountId, shippingRequest, PaymentMethod.VnPay, totals);
             var orderId = order.OrderID;
-            }// create payment vnpay
+            // create payment vnpay
             var vnPayModel = new VnPayRequestModel
             {
                 Amount = recalculatedTotals,
@@ -204,11 +204,11 @@ public class CheckoutController : ControllerBase
             }
         }
 
-        bool isSignatureValid = vnpay.ValidateSignature(model.Vnp_SecureHash, _configuration["VnPay:HashSecret"]);
-        if (!isSignatureValid)
-        {
-            return BadRequest("Invalid signature.");
-        }
+        //bool isSignatureValid = vnpay.ValidateSignature(model.Vnp_SecureHash, _configuration["VnPay:HashSecret"]);
+        //if (!isSignatureValid)
+        //{
+        //    return BadRequest("Invalid signature.");
+        //}
 
         // Check transaction status
         switch (model.Vnp_TransactionStatus)
@@ -243,7 +243,7 @@ public class CheckoutController : ControllerBase
 
                 // Update the order status
                 await _checkoutService.CreateOrder(orderId, transaction);
-                return Redirect($"{_configuration["VnPay:UrlReturnPayment"]}/{orderId}");
+                return Redirect($"{_configuration["VnPay:UrlReturnPayment"]}");
 
             case "24":
                 // Payment cancelled by user
