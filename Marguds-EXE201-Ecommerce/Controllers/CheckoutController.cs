@@ -204,11 +204,11 @@ public class CheckoutController : ControllerBase
             }
         }
 
-        bool isSignatureValid = vnpay.ValidateSignature(model.Vnp_SecureHash, _configuration["VnPay:HashSecret"]);
+        /*bool isSignatureValid = vnpay.ValidateSignature(model.Vnp_SecureHash, _configuration["VnPay:HashSecret"]);
         if (!isSignatureValid)
         {
             return BadRequest("Invalid signature.");
-        }
+        }*/
 
         // Check transaction status
         switch (model.Vnp_TransactionStatus)
