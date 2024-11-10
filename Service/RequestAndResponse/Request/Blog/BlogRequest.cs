@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Service.RequestAndResponse.Request.ImageProduct;
+using Service.RequestAndResponse.Response.ImageBlog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +24,7 @@ namespace Service.RequestAndResponse.Request.Blog
         public DateTime UpdateAt { get; set; } = DateTime.Now;
 
         public bool Status { get; set; }
+
+        public ICollection<GetAllImageBlogResponse> ImageBlogs { get; set; }
     }
 }
